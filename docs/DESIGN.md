@@ -20,6 +20,10 @@ upload one blob, friends pull and decrypt. Membership changes rotate the key.
 - The password is stretched with **Argon2id** into a key that unlocks an
   **encrypted key-bundle** stored server-side as ciphertext. The server never sees
   the password or any private key. (MFA/TOTP is deferred — see ROADMAP R-012.)
+- *Today's build:* accounts exist as **username only in a server `users` table**
+  — signup/login screens hit `POST /api/users/*` with no password. This is a
+  dev-rig probe only (see the first-exercise plan in the server repo); real
+  auth is R-001 exactly as above.
 
 ### 2. The circle key (private mode)
 - Each user owns a symmetric **circle key**. It is **shared** with every friend, so

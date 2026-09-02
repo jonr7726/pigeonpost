@@ -10,6 +10,15 @@ Everything is JSON over HTTPS unless noted. All content payloads the app shares
 the client encrypts with the circle key; the server stores opaque ciphertext
 (see [`../plans/CRYPTO-SPEC.md`](../plans/CRYPTO-SPEC.md)).
 
+## Accounts (skeleton — first-exercise; superseded by R-001's real contract)
+- `POST /api/users/signup` `{username}` → `201 {id, username}`; error codes:
+  `409` username taken, `400` invalid (1–32 chars of letters, digits, `_`).
+- `POST /api/users/login` `{username}` → `200 {id, username}`; error: `404`
+  no such user.
+- `GET /api/health` → `{ok: true}`.
+- **No passwords in this pass** (deliberate scaffolding; auth lands with R-001).
+  A conforming server stores what it must; the client only sees the JSON above.
+
 ## Shape of the contract (per feature, landing with R-001+)
 - **Accounts** — register (username only, no email/phone), fetch/rotate the
   encrypted key-bundle, auth session.

@@ -19,10 +19,20 @@ Web is the target for now; Expo means Android/iOS come later from the same code.
 
 ## Gate (run before every commit)
 ```bash
-bash scripts/check.sh   # typecheck + unit tests + reuse gate
+bash scripts/check.sh   # typecheck + unit tests + reuse gate + copy-paste gate
 ```
 There is **no CI** (decision C15): before merging, the gate is re-run locally from
 a clean checkout of the branch and reported in the handoff as a local run.
+
+Gate details:
+- **Reuse gate** (`scripts/check_ui_reuse.sh`) — named-primitive ceilings that
+  only ever go DOWN (ported from Mogul Music): raw `TextInput` in a screen is
+  ceiling 0 (build shared inputs in `src/ui/components/`), and private
+  `_Widget`/`_Screen` definitions in screens are banned — reusable pieces get
+  promoted, with `reuse-exempt: <why>` as the conscious one-off escape hatch.
+- **Copy-paste gate** (`scripts/check_clones.sh`) — jscpd counts cross-file
+  clones in `src/` against a falling ceiling (currently 3); intra-file
+  repetition is local structure, not a leak, and is ignored.
 
 ## Git identity on this machine
 Default `jon@privacymogul.com`; anything under `~/Documents/Lituus/` overrides to
