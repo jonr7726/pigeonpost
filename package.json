@@ -1,0 +1,32 @@
+{
+  "name": "pigeonpost",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@expo/metro-runtime": "~57.0.14",
+    "age-encryption": "^0.3.1",
+    "expo": "~57.0.18",
+    "expo-status-bar": "~57.0.1",
+    "libsodium-wrappers": "^0.8.4",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-web": "^0.21.2"
+  },
+  "devDependencies": {
+    "@types/libsodium-wrappers": "^0.7.14",
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "bash scripts/check.sh"
+  },
+  "private": true
+}
