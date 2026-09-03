@@ -2,19 +2,22 @@ import { View } from 'react-native';
 
 import { AppText, Avatar, Divider, Panel, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { PageRenderer } from '../ui/profile/PageRenderer';
+import { useRouter } from '../ui/nav';
 import { useProfile, useSampleData } from '../data/sample/useSampleData';
 
 // The profile is a widget page rendered from a layout/theme blob (§8.4): the
 // page body takes its owner's theme; TopBar chrome stays the viewer's.
 export function ProfileScreen({ username }: { username: string }) {
+  const router = useRouter();
+  const pushed = router.stack.length > 0;
   const { isMe, blob, widgetData } = useProfile(username);
   const { friends } = useSampleData();
   const known = friends.find((f) => f.username === username);
   const friendsCount = known ? friends.length + 1 : friends.length;
 
   return (
-    <Screen width="wide">
-      <TopBar title={`@${username}`} showBell />
+    <Screen width="standard">
+      <TopBar title={`@${username}`} onBack={pushed ? router.pop : undefined} />
       <ScreenScroll>
       {isMe && (
         <Panel>

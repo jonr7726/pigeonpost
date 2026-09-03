@@ -10,7 +10,7 @@ export function FeedScreen() {
   const { posts, stories, like } = useFeed();
   return (
     <Screen>
-      <TopBar title="Feed" showBell />
+      <TopBar title="Feed" />
       <ScreenScroll>
       <List<Post>
         items={posts}

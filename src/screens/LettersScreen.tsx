@@ -60,10 +60,10 @@ export function LettersScreen() {
   );
 
   return (
-    <Screen width="wide">
+    <Screen width={desktop ? 'full' : 'standard'}>
       <TopBar
         title="Letters"
-        showBell
+       
         right={<AppButton label="Compose" variant="secondary" onPress={() => router.push({ screen: 'letterCompose' })} />}
       />
       {desktop ? (
@@ -75,7 +75,7 @@ export function LettersScreen() {
               {list(letters)}
             </ScreenScroll>
           </View>
-          <View style={[styles.paneRight, { backgroundColor: palette.paper }]}>
+          <View style={[styles.paneRight, { backgroundColor: palette.panel, borderColor: palette.panelEdge, borderWidth: 1 }]}>
             <ScreenScroll style={styles.grow}>
               {selected != null ? (
                 <LetterPaper letter={selected} firstOpen={false} />

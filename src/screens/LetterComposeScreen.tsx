@@ -22,7 +22,7 @@ export function LetterComposeScreen() {
   const overCap = body.length > CAP;
 
   return (
-    <Screen bg="paper" width="narrow">
+    <Screen bg="paper" width="standard">
       <TopBar title="Compose" onBack={router.pop} />
       <ScreenScroll>
         <Panel style={styles.paper}>

@@ -2,8 +2,10 @@
 // palettes (in palette.ts) are swappable implementations of this type.
 export type Palette = {
   bg: string; // page background
+  bgGlow: string; // fixed brass vignette over the bg (PM port)
   panel: string; // cards / panels
   panelEdge: string; // hairline borders
+  panelSheen: string; // top inset highlight inside panels (PM port)
   text: string; // primary text
   textDim: string; // secondary text
   accent: string; // primary accent (links, active)
@@ -12,6 +14,8 @@ export type Palette = {
   error: string;
   warning: string;
   overlay: string; // scrims / press states
+  hairline: string; // the site-standard section rule (PM CogRule colour)
+  band: string; // global nav band gradient (PM header port)
   // Props — physical objects, not theme. Same names in both palettes; values
   // differ only where the medium demands it (paper is light in dark mode and a
   // natural lighter parchment in light mode — a letter is paper in both).
@@ -22,8 +26,10 @@ export type Palette = {
 
 export const paletteTokens = [
   'bg',
+  'bgGlow',
   'panel',
   'panelEdge',
+  'panelSheen',
   'text',
   'textDim',
   'accent',
@@ -32,6 +38,8 @@ export const paletteTokens = [
   'error',
   'warning',
   'overlay',
+  'hairline',
+  'band',
   'paper',
   'ink',
   'wax',

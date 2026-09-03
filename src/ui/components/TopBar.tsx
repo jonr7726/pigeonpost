@@ -10,16 +10,10 @@ export function TopBar({
   title,
   onBack,
   right,
-  showBell,
-  onPressBell,
-  bellActive,
 }: {
   title?: string;
   onBack?: () => void;
   right?: React.ReactNode;
-  showBell?: boolean;
-  onPressBell?: () => void;
-  bellActive?: boolean;
 }) {
   const { palette } = useTheme();
   return (
@@ -36,11 +30,6 @@ export function TopBar({
       </AppText>
       <View style={styles.rightRow}>
         {right}
-        {showBell && (
-          <Pressable onPress={onPressBell} accessibilityRole="button" accessibilityLabel="notifications">
-            <AppText style={bellActive ? styles.bellActive : styles.bellIdle}>🔔</AppText>
-          </Pressable>
-        )}
       </View>
     </View>
   );
@@ -51,6 +40,4 @@ const styles = StyleSheet.create({
   edgeSpace: { width: 24 },
   title: { flex: 1 },
   rightRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
-  bellIdle: { fontSize: 20, opacity: 0.85 },
-  bellActive: { fontSize: 20 },
 });

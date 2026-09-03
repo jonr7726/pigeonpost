@@ -16,7 +16,7 @@ export function PostDetailScreen({ postId }: { postId: string }) {
   if (post == null) return null;
   return (
     <Screen>
-      <TopBar title="Post" onBack={router.pop} showBell />
+      <TopBar title="Post" onBack={router.pop} />
       <ScreenScroll>
       <PostCard post={post} onLike={() => like(post.id)} />
       <List<Comment>

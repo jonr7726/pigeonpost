@@ -14,7 +14,7 @@ export function LetterReadScreen({ letterId }: { letterId: string }) {
   const letter = letters.find((entry) => entry.id === letterId);
   if (letter == null) return null;
   return (
-    <Screen bg="paper" width="narrow">
+    <Screen bg="paper" width="standard">
       <TopBar
         title={letter.subject}
         onBack={router.pop}

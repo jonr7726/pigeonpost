@@ -2,15 +2,16 @@ import { StyleSheet, View, type ViewProps } from 'react-native';
 
 import { useTheme } from '../theme/useTheme';
 
-export type ScreenWidth = 'narrow' | 'reading' | 'wide';
+export type ScreenWidth = 'standard' | 'full';
 
-// Safe-area + padding wrapper every screen is wrapped in. `width` centres a
-// content column: narrow (forms, letters ~560), reading (feed/posts ~640),
-// wide (profile pages, two-pane letters ~900). Desktop gives the same
-// components wider columns — nothing screen-specific from this file.
+// Safe-area + padding wrapper every screen is wrapped in. `standard` is THE
+// rule on desktop: a 2/3-width centre column (min 560 / max 980) so every tab
+// reads at the same measure, and the left/right margins stay free for future
+// profile banners. Full-bleed two-pane screens may take `full`. On mobile
+// both are simply full width.
 export function Screen({
   children,
-  width = 'reading',
+  width = 'standard',
   bg = 'bg',
   style,
   ...rest
@@ -26,7 +27,7 @@ export function Screen({
   );
 }
 
-const columns = { narrow: 560, reading: 640, wide: 960 };
+const columns = { standard: '66.6%', full: 1240 } as const;
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },

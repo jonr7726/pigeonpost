@@ -116,18 +116,31 @@ breakpoint + semantic container widths**, not by writing screen pairs:
   (`useLayoutMode()`); a screen may branch *layout*, never *components*.
 - Content is centred columns via `Screen width=` (narrow 560 / reading 640 /
   wide 960): every screen is one code path, and the column just widens.
-- Global chrome adapts: bottom **NavBar (mobile/tablet)** vs left **SideRail
-  (desktop)** — same five tabs, same list, two renderers of one registry.
+- Global chrome adapts: bottom **NavBar (mobile/tablet)** vs **TopNav
+  header-band (desktop, ported from privacymogul's walnut/brass band)** — the
+  same four content tabs in both; the profile lives behind the user image
+  (never a nav item), the notification bell rides in the bar, and detail
+  screens get universal back buttons in their TopBar.
 - Content splits only where the viewport demands: the letters inbox is
   stack-on-mobile / **two-pane on desktop** (list + reading pane); profile
   layouts carry per-widget `span` (bridge one or both columns on desktop,
   collapse to a stack on mobile).
+- **One measured column: desktop content is a standard 2/3-width centre
+  column** (min 560 / max 980) regardless of tab — the margins stay clear as
+  the reserved canvas for owner-chosen profile banners (a later editor
+  feature). `Screen width="full"` is the only exception (letters two-pane).
+- **Web scroll is page-level:** screens wrap their content in the shared
+  `ScreenScroll`; `List` lists without owning scroll, so banners, charts and
+  headers travel with the page. On web the native scrollbar is hidden and a
+  **brass rail with a travelling pigeon** (PM `CogScrollbar` port, negligible
+  drag/click affordances kept) indicates progress; `prefers-reduced-motion`
+  holds it still.
 
 ### 4.3 Shared component library + the screens rule
 `src/ui/components/` (one barrel, `components.ts`): AppText, AppButton, Panel,
 AppInput, SearchBar, Avatar, Divider/PageRule, Icon (curated glyph set),
 NavBar/SideRail/TopBar, Screen, List, Loading, EmptyState, Banner, Modal,
-ThemeToggle, PostCard, StoryRow, CommentRow, LikeButton, WorldMap. **Jon's rule,
+ThemeToggle, PostCard, StoryRow, CommentRow, LikeButton, WorldMap, Rule (PM hairline). **Jon's rule,
 gate-enforced:** a screen never imports a UI primitive — it composes shared
 components (raw `Text`/`TextInput`/`ActivityIndicator`/vertical `ScrollView` and
 deep imports are ceiling-0 in `check_ui_reuse.sh`). "We only need one" is never

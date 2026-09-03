@@ -6,7 +6,7 @@ import { useTheme } from '../theme/useTheme';
 export function Panel({ children, style, ...rest }: ViewProps) {
   const { palette } = useTheme();
   return (
-    <View style={[styles.panel, { backgroundColor: palette.panel, borderColor: palette.panelEdge }, style]} {...rest}>
+    <View style={[styles.panel, { backgroundColor: palette.panel, borderColor: palette.panelEdge, boxShadow: palette.panelSheen }, style]} {...rest}>
       {children}
     </View>
   );

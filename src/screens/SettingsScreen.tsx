@@ -11,8 +11,8 @@ export function SettingsScreen() {
   const { mode, toggle } = useTheme();
   const { username } = useSession();
   return (
-    <Screen width="narrow">
-      <TopBar title="Settings" showBell />
+    <Screen width="standard">
+      <TopBar title="Settings" />
       <ScreenScroll>
       <Panel style={styles.gap}>
         <AppText tone="display" size="lg">

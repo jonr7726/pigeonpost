@@ -1,13 +1,15 @@
 import { StyleSheet, View } from 'react-native';
 
-import { NavBar, SideRail } from './components';
+import { GlobalStyle } from './chrome/GlobalStyle';
+import { BrassRail } from './chrome/BrassRail';
+import { NavBar, TopNav } from './components';
 import { useLayoutMode } from './theme/breakpoints';
 import { useTheme } from './theme/useTheme';
 import { useRouter } from './nav';
 import { FeedScreen } from '../screens/FeedScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LettersScreen } from '../screens/LettersScreen';
-import { PeopleScreen } from '../screens/PeopleScreen';
+import { FriendsScreen } from '../screens/FriendsScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { PostDetailScreen } from '../screens/PostDetailScreen';
 import { LetterReadScreen } from '../screens/LetterReadScreen';
@@ -15,15 +17,15 @@ import { LetterComposeScreen } from '../screens/LetterComposeScreen';
 import { useSampleData } from '../data/sample/useSampleData';
 import { useSession } from './session';
 
-// The bottom tab NavBar (mobile/tablet) vs the SideRail (desktop): same five
-// tabs, same placement rule — every later screen lands inside this shell.
-// Global chrome always follows the viewer's own app theme.
+// The bottom tab NavBar (mobile/tablet) vs the PM-style TopNav band (desktop):
+// same four content tabs; profile lives behind the user image; the bell rides
+// in the bar. Global chrome always follows the viewer's own app theme.
 export function AppShell() {
-  const { palette } = useTheme();
+  const { palette, mode: themeMode } = useTheme();
   const router = useRouter();
   const session = useSession();
   const railName = session.username ?? 'wren';
-  const mode = useLayoutMode();
+  const desktop = useLayoutMode() === 'desktop';
   const top = router.stack[router.stack.length - 1];
 
   const body =
@@ -36,7 +38,7 @@ export function AppShell() {
     ) : router.tab === 'letters' ? (
       <LettersScreen />
     ) : router.tab === 'discover' ? (
-      <PeopleScreen />
+      <FriendsScreen />
     ) : router.tab === 'profile' ? (
       <ProfileScreen username={railName} />
     ) : (
@@ -45,9 +47,11 @@ export function AppShell() {
 
   return (
     <View style={[styles.fill, { backgroundColor: palette.bg }]}>
-      {mode === 'desktop' ? (
-        <View style={styles.desktop}>
-          <SideRail active={router.tab} onSelect={router.goTab} username={railName} />
+      <GlobalStyle mode={themeMode} bg={palette.bg} bgGlow={palette.bgGlow} />
+      <BrassRail />
+      {desktop ? (
+        <View style={styles.desktopCol}>
+          <TopNav active={router.tab} onSelect={router.goTab} username={railName} />
           <View style={styles.main}>
             <View style={styles.inner}>{body}</View>
           </View>
@@ -55,7 +59,7 @@ export function AppShell() {
       ) : (
         <View style={styles.mobile}>
           <View style={styles.mainMobile}>{body}</View>
-          <NavBar active={router.tab} onSelect={router.goTab} />
+          <NavBar active={router.tab} onSelect={router.goTab} username={railName} />
         </View>
       )}
     </View>
@@ -64,7 +68,7 @@ export function AppShell() {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  desktop: { flexDirection: 'row', flex: 1 },
+  desktopCol: { flexDirection: 'column', flex: 1 },
   mobile: { flex: 1 },
   main: { flex: 1, flexDirection: 'column', alignItems: 'center' },
   mainMobile: { flex: 1, width: '100%' },
