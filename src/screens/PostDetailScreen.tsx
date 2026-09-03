@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { AppInput, AppText, CommentRow, List, PostCard, Screen, TopBar } from '../ui/components';
+import { AppInput, AppText, CommentRow, List, PostCard, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { useRouter } from '../ui/nav';
 import { comments as seedComments, posts as seedPosts } from '../data/sample/sample';
 import { useFeed } from '../data/sample/useSampleData';
@@ -17,6 +17,7 @@ export function PostDetailScreen({ postId }: { postId: string }) {
   return (
     <Screen>
       <TopBar title="Post" onBack={router.pop} showBell />
+      <ScreenScroll>
       <PostCard post={post} onLike={() => like(post.id)} />
       <List<Comment>
         items={comments}
@@ -25,6 +26,7 @@ export function PostDetailScreen({ postId }: { postId: string }) {
         empty={{ what: 'no comments yet', why: 'friends comment from your feed or profile' }}
         header={<TopBannerCount count={comments.length} />}
       />
+      </ScreenScroll>
     </Screen>
   );
 }

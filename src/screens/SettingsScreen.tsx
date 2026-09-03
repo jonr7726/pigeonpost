@@ -1,17 +1,19 @@
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Divider, Panel, Screen, ThemeToggle, TopBar } from '../ui/components';
-import { useTheme, type ThemeMode } from '../ui/theme/ThemeProvider';
+import { AppText, Divider, Panel, Screen, ScreenScroll, ThemeToggle, TopBar } from '../ui/components';
+import { useTheme } from '../ui/theme/ThemeProvider';
+import { useSession } from '../ui/session';
 import { useSampleData } from '../data/sample/useSampleData';
 
 // Settings: the theme toggle lives here (app-level chrome theme), plus about.
 // Profile-page themes are their owner's business and are unaffected by this.
 export function SettingsScreen() {
   const { mode, toggle } = useTheme();
-  const { me } = useSampleData();
+  const { username } = useSession();
   return (
     <Screen width="narrow">
       <TopBar title="Settings" showBell />
+      <ScreenScroll>
       <Panel style={styles.gap}>
         <AppText tone="display" size="lg">
           Appearance
@@ -30,9 +32,10 @@ export function SettingsScreen() {
         </AppText>
         <Divider />
         <AppText tone="dim" size="sm">
-          signed in as @{me.username} · dev-rig account (real accounts arrive with R-001)
+          signed in as @{username ?? 'wren'} · dev-rig account (real accounts arrive with R-001)
         </AppText>
       </Panel>
+      </ScreenScroll>
     </Screen>
   );
 }

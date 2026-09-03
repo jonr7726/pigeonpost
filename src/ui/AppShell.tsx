@@ -13,15 +13,16 @@ import { PostDetailScreen } from '../screens/PostDetailScreen';
 import { LetterReadScreen } from '../screens/LetterReadScreen';
 import { LetterComposeScreen } from '../screens/LetterComposeScreen';
 import { useSampleData } from '../data/sample/useSampleData';
+import { useSession } from './session';
 
 // The bottom tab NavBar (mobile/tablet) vs the SideRail (desktop): same five
 // tabs, same placement rule — every later screen lands inside this shell.
 // Global chrome always follows the viewer's own app theme.
-export function AppShell({ signedIn }: { signedIn?: { username: string } }) {
+export function AppShell() {
   const { palette } = useTheme();
   const router = useRouter();
-  const { me } = useSampleData();
-  const railName = signedIn?.username ?? me.username;
+  const session = useSession();
+  const railName = session.username ?? 'wren';
   const mode = useLayoutMode();
   const top = router.stack[router.stack.length - 1];
 
@@ -37,7 +38,7 @@ export function AppShell({ signedIn }: { signedIn?: { username: string } }) {
     ) : router.tab === 'discover' ? (
       <PeopleScreen />
     ) : router.tab === 'profile' ? (
-      <ProfileScreen username={me.username} />
+      <ProfileScreen username={railName} />
     ) : (
       <SettingsScreen />
     );
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   desktop: { flexDirection: 'row', flex: 1 },
   mobile: { flex: 1 },
-  main: { flex: 1, width: '100%', maxWidth: 1240, alignSelf: 'center' },
+  main: { flex: 1, flexDirection: 'column', alignItems: 'center' },
   mainMobile: { flex: 1, width: '100%' },
-  inner: { flex: 1 },
+  inner: { flex: 1, width: '100%', maxWidth: 1240 },
 });

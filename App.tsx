@@ -5,6 +5,7 @@ import { ThemeProvider } from './src/ui/theme/ThemeProvider';
 import { RouterProvider } from './src/ui/nav';
 import { AccountScreen } from './src/screens/AccountScreen';
 import { AppShell } from './src/ui/AppShell';
+import { SessionProvider } from './src/ui/session';
 
 // ThemeProvider wraps everything (mode switch is instant + global); the
 // dev-rig account card gates the shell. No navigation library yet — the
@@ -18,7 +19,9 @@ export default function App() {
         {user == null ? (
           <AccountScreen onSignedIn={setUser} />
         ) : (
-          <AppShell signedIn={user} />
+          <SessionProvider username={user == null ? null : user.username}>
+            <AppShell />
+          </SessionProvider>
         )}
       </RouterProvider>
     </ThemeProvider>

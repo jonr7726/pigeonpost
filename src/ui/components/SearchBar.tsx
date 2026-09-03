@@ -38,6 +38,6 @@ export function SearchBar({
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8, width: '100%' },
   input: { flex: 1 },
 });

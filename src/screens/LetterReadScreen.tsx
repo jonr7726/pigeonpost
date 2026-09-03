@@ -19,7 +19,9 @@ export function LetterReadScreen({ letterId }: { letterId: string }) {
         title={letter.subject}
         onBack={router.pop}
       />
+      <ScreenScroll>
       <LetterPaper letter={letter} firstOpen={letter.state === 'opened' && letter.text == null} />
+      </ScreenScroll>
     </Screen>
   );
 }

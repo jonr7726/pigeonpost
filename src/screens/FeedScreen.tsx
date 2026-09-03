@@ -1,4 +1,4 @@
-import { List, PostCard, Screen, StoryRow, TopBar } from '../ui/components';
+import { List, PostCard, Screen, ScreenScroll, StoryRow, TopBar } from '../ui/components';
 import { useRouter } from '../ui/nav';
 import { useFeed } from '../data/sample/useSampleData';
 import type { Post } from '../data/sample/types-shared';
@@ -11,6 +11,7 @@ export function FeedScreen() {
   return (
     <Screen>
       <TopBar title="Feed" showBell />
+      <ScreenScroll>
       <List<Post>
         items={posts}
         keyOf={(post) => post.id}
@@ -24,6 +25,7 @@ export function FeedScreen() {
         empty={{ what: 'The loft is quiet', why: "your circle hasn't posted in a while" }}
         header={<StoryRow stories={stories} />}
       />
+      </ScreenScroll>
     </Screen>
   );
 }

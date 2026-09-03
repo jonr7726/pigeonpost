@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { AppText, Avatar, Divider, Panel, Screen, TopBar } from '../ui/components';
+import { AppText, Avatar, Divider, Panel, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { PageRenderer } from '../ui/profile/PageRenderer';
 import { useProfile, useSampleData } from '../data/sample/useSampleData';
 
@@ -15,6 +15,7 @@ export function ProfileScreen({ username }: { username: string }) {
   return (
     <Screen width="wide">
       <TopBar title={`@${username}`} showBell />
+      <ScreenScroll>
       {isMe && (
         <Panel>
           <AppText tone="dim" size="sm">
@@ -24,6 +25,7 @@ export function ProfileScreen({ username }: { username: string }) {
       )}
       <ProfileStats friendsCount={friendsCount} />
       <PageRenderer blob={blob} username={username} data={widgetData} />
+      </ScreenScroll>
     </Screen>
   );
 }

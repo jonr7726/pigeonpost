@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Avatar, Banner, Divider, List, Panel, Screen, TopBar } from '../ui/components';
+import { AppText, Avatar, Divider, List, Panel, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { SearchBar } from '../ui/components/SearchBar';
 import { useRouter } from '../ui/nav';
 import { useSampleData } from '../data/sample/useSampleData';
@@ -20,6 +20,7 @@ export function PeopleScreen() {
     <Screen width="narrow">
       <TopBar title="People" showBell />
       <SearchBar value={query} onChange={setQuery} placeholder="find a username…" />
+      <ScreenScroll>
       <List<FriendRequest>
         items={friendRequests}
         keyOf={(request) => request.id}
@@ -37,6 +38,7 @@ export function PeopleScreen() {
           why: query.trim() ? 'usernames match exactly' : 'find someone above — you can only reach friends',
         }}
       />
+      </ScreenScroll>
     </Screen>
   );
 }

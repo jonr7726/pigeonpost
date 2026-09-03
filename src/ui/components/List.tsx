@@ -1,12 +1,9 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
-
 import { AppText } from './AppText';
 import { Divider } from './Divider';
 import { EmptyState } from './EmptyState';
 import { Loading } from './Loading';
-import { useTheme } from '../theme/useTheme';
-
-export type ListProps<Item> = {
+type ListProps<Item> = {
   items: readonly Item[] | null;
   renderItem: (item: Item) => React.ReactNode;
   keyOf: (item: Item) => string;
@@ -16,45 +13,38 @@ export type ListProps<Item> = {
   divided?: boolean;
   header?: React.ReactNode;
 };
-
-// The one list: loading / error / empty / divided states in one implementation,
-// vertical scroll included (screens never render a raw vertical ScrollView).
+// The one list: loading / error / empty / divided states in one implementation.
+// SCROLL OWNERSHIP: List never owns vertical scroll — the screen decides
+// (ScreenScroll/pagepane wrapper), so headers, banners and maps scroll along.
 export function List<Item>({ items, renderItem, keyOf, loading, empty, error, divided, header }: ListProps<Item>) {
-  const { palette } = useTheme();
   if (loading) return <Loading />;
   if (error != null) return <AppText style={styles.error} align="center">{`⚠︎ ${error}`}</AppText>;
   if (items != null && items.length === 0 && empty != null) return <EmptyState what={empty.what} why={empty.why} />;
   return (
-    <ScrollView style={styles.fill}>
+    <View>
       {header}
       <View>
         {(items ?? []).map((item, index) => (
           <View key={keyOf(item)}>
             {renderItem(item)}
-            {divided && index < (items?.length ?? 0) - 1 && <Divider style={{ borderTopColor: palette.panelEdge }} />}
+            {divided && index < (items?.length ?? 0) - 1 && <Divider />}
           </View>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 }
-
-// Compact single-screen scroller (detail panes) — same guarantees, no header.
-export function ScreenScroll({ children }: { children: React.ReactNode }) {
+// The one vertical page scroller (screens wrap their content in this).
+export function ScreenScroll({ children, contentStyle, style }: { children: React.ReactNode; contentStyle?: object; style?: object }) {
   return (
-    <ScrollView
-      contentContainerStyle={styles.screen}
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-    >
+    <ScrollView style={[styles.grow, style]} contentContainerStyle={[styles.screen, contentStyle]} showsVerticalScrollIndicator={false}>
       {children}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  spinner: { padding: 24 },
   error: { padding: 24 },
-  fill: { flex: 1 },
   screen: { paddingBottom: 32 },
+  grow: { flex: 1, flexGrow: 1, flexBasis: 0 },
 });
