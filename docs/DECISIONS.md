@@ -95,3 +95,13 @@ the client and server of the session's own worktrees and hitting the API
 contract. They live in the server repo because the rig (ports, DB seeds,
 `new-worktree.sh`) lives there too. Journeys that are pure-client crypto
 properties still belong in this repo's unit tier (C12, `reference/TESTING.md`).
+
+**C17 — Production CORS: none — the client is served same-origin.** The web
+client and API share one origin in production, so no CORS headers are emitted
+there at all (the safest posture: no origin wildcard for anyone to lean on).
+Cross-origin requests only exist in dev (Expo web on one port, API on another),
+and there they are **opt-in**: the dev rig writes `CORS_ORIGIN` into the
+worktree's `.env`, and the API emits CORS headers only when that variable is
+set — production never sets it, so the middleware doesn't even exist. Pinned by
+`__tests__/cors.test.ts` on the server side. (First-exercise friction #6/#14;
+decided there, formalised here.)
