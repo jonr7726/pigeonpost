@@ -81,3 +81,84 @@ separate **private** repo (`pigeonpost-server`) that implements the wire contrac
 in [`reference/API.md`](reference/API.md); this repo remains the open-source one.
 From the client's point of view the server is only "an API that stores ciphertext",
 so hosting choices don't leak into client code or docs.
+
+## UI design (C18–C20)
+
+The FE/UI how-to lives here (per the parent procedure's ownership table). The
+exhaustive design notes, wireframes and open questions that led here were
+[`plans/UI-DESIGN.md`](plans/UI-DESIGN.md), now folded into this section.
+
+### 4.1 Theme system — semantic tokens, two swappable palettes
+- **Tokens are the contract; palettes are values.** Components never name a
+  colour — they read `palette.bg / panel / text / textDim / accent / accentAlt /
+  success / error / warning / overlay` plus the **props** `paper / ink / wax`
+  (a letter's physical surfaces) through the `useTheme()` hook. The only file
+  where a colour literal may appear is `src/ui/theme/palette.ts` — enforced by
+  `scripts/check_palette.sh` (see [TESTING](reference/TESTING.md)). Swapping a
+  palette is swapping one file's values.
+- **Two palettes:** **dark** (default, the product identity — coal/walnut/brass,
+  ported from privacymogul's palette) and **light** ("parchment" — cream paper,
+  walnut ink, darkened brass, re-derived for WCAG contrast). Both implement the
+  same 11 tokens + 3 props; the light accent is *not* the raw brass because raw
+  brass fails contrast on cream.
+- **Mode behaviour:** default dark; first run follows `prefers-color-scheme`;
+  the toggle (sun/moon, in Settings) persists the user's choice. Only **global
+  chrome** — NavBar, TopBar, banners — follows the viewer's theme. Profile
+  **pages** are themed by their owner (below): a light profile page inside your
+  dark chrome is intentional, not a bug.
+- **Letters are physical:** `paper` stays light and `ink` stays dark in both
+  modes; the mail stream should never look themeable.
+
+### 4.2 Responsive — one component library, two layouts
+Desktop and mobile web reuse everything; the foolproof split is by **viewport
+breakpoint + semantic container widths**, not by writing screen pairs:
+- Breakpoints in `src/ui/theme/breakpoints.ts` — tablet ≥768, desktop ≥1080
+  (`useLayoutMode()`); a screen may branch *layout*, never *components*.
+- Content is centred columns via `Screen width=` (narrow 560 / reading 640 /
+  wide 960): every screen is one code path, and the column just widens.
+- Global chrome adapts: bottom **NavBar (mobile/tablet)** vs left **SideRail
+  (desktop)** — same five tabs, same list, two renderers of one registry.
+- Content splits only where the viewport demands: the letters inbox is
+  stack-on-mobile / **two-pane on desktop** (list + reading pane); profile
+  layouts carry per-widget `span` (bridge one or both columns on desktop,
+  collapse to a stack on mobile).
+
+### 4.3 Shared component library + the screens rule
+`src/ui/components/` (one barrel, `components.ts`): AppText, AppButton, Panel,
+AppInput, SearchBar, Avatar, Divider/PageRule, Icon (curated glyph set),
+NavBar/SideRail/TopBar, Screen, List, Loading, EmptyState, Banner, Modal,
+ThemeToggle, PostCard, StoryRow, CommentRow, LikeButton, WorldMap. **Jon's rule,
+gate-enforced:** a screen never imports a UI primitive — it composes shared
+components (raw `Text`/`TextInput`/`ActivityIndicator`/vertical `ScrollView` and
+deep imports are ceiling-0 in `check_ui_reuse.sh`). "We only need one" is never
+a reason to inline; build the generic one.
+
+### 4.4 Profiles — the MySpace-based, XSS-safe widget engine (C19)
+- A profile is a **page of widgets** (about / wall / recent-posts / pigeons …)
+  rendered by `src/ui/profile/PageRenderer` from a stored **layout/theme blob**
+  (C08 blob type): page-level mode + colour picks, per-widget overrides. No
+  user markup ever executes (the MySpace XSS lesson — the editor later edits
+  the blob, it cannot inject code). MySpace 2004–2010 model notes live in the
+  frozen plan (§8.2) if a widget design question needs the history.
+- The v1 layouts are hardcoded as sample blobs (Instagram-ish + MySpace-maximal
+  in the sample data) but render through the same engine the future editor
+  drives — customisation later is a blob editor, not a rebuild.
+- Walls: friends post on a profile's wall; the owner deletes (not edits) any
+  post. No repost/quote ever (C18 below).
+
+### 4.5 Letters — the model of record (C20)
+- **A map, not an Earth:** a hand-drawn parchment world of pins. Your pin is
+  movable; pin distance maps to delivery days (average ≈ 3 days).
+- **Delivery:** a letter is *stamped* (press-and-hold chop), then **in transit**
+  with a server-held release time. Recipient sees "sealed, arrives Tue"; opening
+  **breaks the seal once, ever** (animated; `prefers-reduced-motion` gets the
+  single still frame). Reads after that are plain paper.
+- **Text-only, ~10k char silent cap** (inline error past the cap); **drafts
+  yes; no self-letters**; **immutable once delivered** — no edit, no delete,
+  email-like.
+- **Friends-only addressing**, and pigeons are **visible in flight to the
+  circle by default** ("from → to" readable); each viewer can switch that
+  visibility off — honest metadata, never marketed as hidden.
+- Seal art is decorative (never in the blob); the map position is profile-type
+  blob data; the server computing delivery from two coordinates is the honest
+  timing-metadata trade (see [Trust model](#trust-model)).

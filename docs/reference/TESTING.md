@@ -22,7 +22,11 @@ core lands in R-002, then become real assertions **in the same commit** as the c
 
 ## 2. Component tests
 Key UI states (loading / empty / error / populated) for shared components in
-`src/ui/components/`. Added with the features that introduce them.
+`src/ui/components/`. Added with the features that introduce them. The palette
+tier also lives here: `src/ui/theme/__tests__/palette.test.ts` computes WCAG
+contrast for `text`/`textDim`/`accent` on `bg`/`panel` and `ink` on `paper` for
+**both** palettes (dark + parchment) and fails a palette that can't read; it
+also pins every palette to the full token set.
 
 ## 3. e2e (journeys)
 Playwright over the web build for real user journeys (sign up → add friend → post →
@@ -33,5 +37,21 @@ each journey is a client-facing flow, and e2e is the functional test for flows.
 It complements, and never replaces, tier 1.
 
 ## The gate
-`bash scripts/check.sh` runs typecheck + unit tests + the reuse ratchet. Never commit
-red. Bug fix / behaviour change to existing code → **write the failing test first** (TDD).
+`bash scripts/check.sh` runs typecheck + unit tests + the reuse ratchet + the
+palette guard + the copy-paste ratchet. Never commit red. Bug fix / behaviour
+change to existing code → **write the failing test first** (TDD).
+
+Gate details:
+- **Reuse ratchet** (`scripts/check_ui_reuse.sh`) — named-primitive ceilings
+  that only ever go DOWN (C21): raw `TextInput`, `Text`, `ActivityIndicator`,
+  vertical `ScrollView`, and imports deeper than the barrel (`src/ui/components`)
+  in a screen are all ceiling 0; screens compose shared components
+  (`src/ui/components/`), or use `reuse-exempt: <why>` as the conscious one-off
+  escape hatch.
+- **Palette guard** (`scripts/check_palette.sh`) — colour literals and
+  Tailwind-style arbitrary colour classes are banned everywhere except
+  `src/ui/theme/palette.ts`. A UI that "just needs one colour" adds a named
+  token/prop colour there — review-visible, swappable.
+- **Copy-paste ratchet** (`scripts/check_clones.sh`) — jscpd counts cross-file
+  clones in `src/` against a falling ceiling (currently 3); intra-file
+  repetition is local structure, not a leak, and is ignored.

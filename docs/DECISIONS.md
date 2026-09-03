@@ -105,3 +105,41 @@ worktree's `.env`, and the API emits CORS headers only when that variable is
 set — production never sets it, so the middleware doesn't even exist. Pinned by
 `__tests__/cors.test.ts` on the server side. (First-exercise friction #6/#14;
 decided there, formalised here.)
+
+**C18 — No repost/quote, ever, and no ranking: the feed is frugal.** Sharing
+someone's post to your own audience broadcasts *their* words to *your* reach —
+a privacy violation, not a feature. The feed is friends-only, strictly
+reverse-chronological, stories on top (S5); no letters band on it (that's the
+Letters tab's whole reason to exist). Revisit only if a circle explicitly asks.
+
+**C19 — Profiles are owner-themed widget pages, never user HTML.** The MySpace
+profile-as-homepage model is the product shape, but MySpace's raw-HTML custom
+profiles were an XSS farm, and E2EE raises the stakes (a profile-script flaw
+reads plaintext in-session). So: profiles render a curated, registered widget
+set (about / wall / recent-posts / pigeons / …) from a stored layout/theme blob —
+page-level mode + colour picks from palette tokens, per-widget overrides, zero
+user markup executed. v1 hardcodes the layout as a sample blob but through the
+renderer engine the future editor will drive; the editor is a feature of the
+blob, not a rewrite. The page theme belongs to the page's owner; the viewer's
+chrome (NavBar/TopBar/banners) always follows the viewer's own app theme.
+
+**C20 — Letters: parchment world, once-only seals, immutable once delivered.**
+From Jon's brief, decided round 2/3 (2026-09-03, §7 of the frozen plan): a
+hand-drawn map of movable pins; distance ⇄ delivery days (average ≈ 3 days);
+press-and-hold stamping; server-held release time while in transit; seal breaks
+once, ever, animated with a reduced-motion still. Letters are text-only with a
+silent ~10k cap (inline error past it, never surfaced), drafts fine, no
+self-letters, no edit/delete after delivery. Cannot address non-friends.
+Pigeons in flight are visible to the circle ("from → to") unless a viewer
+toggles that visibility off — honest metadata; the server computing delivery
+from two coordinates is the same trade and is stated in DESIGN's trust model.
+
+**C21 — Colour lives in one file; screens compose shared components.** The
+theme system is semantic tokens read via `useTheme()`, with the only colour
+literals in `src/ui/theme/palette.ts` (guard script + WCAG contrast unit tests
+in the gate), and the reuse ratchet extended to ban raw `Text`,
+`ActivityIndicator`, vertical `ScrollView`, and deep component imports in
+screens. Desktop vs mobile is one component library: breakpoint + a semantic
+column width (`Screen width=`), chrome that swaps itself (NavBar ↔ SideRail),
+and per-widget spans — never a screen split in two by breakpoint. (Mogul
+Music's ported ratchet discipline, now also guarding colour.)
