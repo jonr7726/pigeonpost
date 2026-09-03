@@ -1,6 +1,6 @@
 # pigeonpost (client)
 
-A small, private social network. Post to your circle, not to the world — your
+A small, private social network. Post to your circle, not to the world. Your
 posts, stories, comments and profile are **end-to-end encrypted** so the server
 that stores them can't read them. Plus a **pigeon mail** feature: a letter that
 takes days to arrive.
