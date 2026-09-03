@@ -12,4 +12,7 @@ npx vitest run
 echo "▶ ui reuse gate"
 bash scripts/check_ui_reuse.sh
 
+echo "▶ copy-paste gate"
+bash scripts/check_clones.sh
+
 echo "✓ all green"

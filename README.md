@@ -13,20 +13,11 @@ takes days to arrive.
 > We make that trust *checkable* — the client is open source (AGPL-3.0) and every
 > release publishes a build hash you can verify. See [`docs/DESIGN.md`](docs/DESIGN.md#trust-model).
 
-## This repo vs the project
-
-This repo holds the **client** and everything publishable: the app, the crypto
-spec, the design, the API contract, the decisions. It is **the open-source repo**.
-The server implementation lives in a separate **private** repo
-(`pigeonpost-server`, sibling folder) — there is no reason for a client to know
-how a server is stored or deployed, only what the wire contract says. The
-project's working procedure, session rules and cross-repo layout live in the
-parent folder's `CLAUDE.md`.
-
 ## Status
 
-Early scaffold. No features yet — this repo currently holds the architecture,
-the crypto spec, and the working conventions. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Early build: the app runs, accounts exist as usernames (real auth lands next —
+see [`docs/ROADMAP.md`](docs/ROADMAP.md)). The architecture and the crypto spec
+are already here and are the best guides to what this becomes.
 
 ## Stack
 
