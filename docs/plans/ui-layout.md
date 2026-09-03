@@ -224,23 +224,13 @@ Letters:
 - L4 — Can a letter be sent to yourself (mosaic/note-to-self)? (MySpace had
   "bulletins"; a self-letter is a natural note-to-self.) — *leaning: yes, after MVP*.
 
-Social (Jon said less confident here — see the comparison table in chat notes and
-the MySpace/Instagram fork below):
-- S1 — **Repost/quote**: allow share-to-your-feed of a friend's post (Twitter/Tumblr
-  style) or only comments + your own posts (Instagram style)?
-- S2 — **Friends wall**: can a friend post *on your profile* (MySpace wall comments)
-  or only comment under your posts?
-- S3 — **Top friends ("Top 8")**: show a ranked shortlist of your closest friends
-  on your profile (MySpace's signature, and causes drama — but very on-brand for a
-  friend-circle product)? — *leaning: yes, opt-in "inner circle" of up to 8,
-  choose to show it or not.*
-- S4 — **Reactions beyond like**: upvote/downvote, comments-with-reactions, emoji
-  picker? — *leaning: like only for v1, reactions later.*
-- S5 — Stories: one list of friends' stories (Instagram) or per-friend "story" tab
-  on their profile too? — *leaning: both, StoryRow fetches once.*
-- S6 — Post editing: allow edit-with-history (Facebook) or immutable posts (IG/TW)?
-- S7 — Notifications surface: a bell tab? in-line dot? (This needs a decision
-  because it drives the NavBar — currently drawn without a bell.)
+Social — **decided with Jon (2026-09-03)**:
+- S1 — **No repost/quote in v1** (your feed is your own posts; engagement is comments/likes). Appendix later if the circle wants amplification.
+- S2 — **Friends can post on your profile** (MySpace wall), as a wall post type of the blob model. v1: no per-user wall toggle (add one if noise shows up).
+- S3 — **No Top 8 / inner circle** (skip ranking drama).
+- S7 — **Bell icon in the TopBar** (badge dot; no sixth tab). NavBar stays 5 slots.
+- S4 — like only in v1, reactions later (unchanged leaning, wasn't contested).
+- S5/S6 — StoryRow on the feed + per-friend stories on their profile; no post editing (immutable posts) unless Jon asks.
 
 ---
 
