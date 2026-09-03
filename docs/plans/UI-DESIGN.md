@@ -341,7 +341,7 @@ HTML only with a threat-model doc if a real ask appears.**
 
 ---
 
-## 9. Implementation order for the next session (suggested commits) + both palettes + ThemeProvider + palette check script + contrast
+## 9. Implementation order for the next session (suggested commits)
    test; extend reuse ratchet (§2). Docs lift §1/§2 into `DESIGN.md` + `TESTING.md`.
 2. Core primitive components (AppText → … → Modal) + component tests for the
    key states (loading/empty/error/populated, per `TESTING.md` tier 2).
