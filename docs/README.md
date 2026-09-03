@@ -33,6 +33,7 @@ Each carries a `Status:` line. Active plans are linked from `ROADMAP.md` by `R-N
 | Plan | Status |
 |------|--------|
 | [`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md) | **Active** (foundation for R-001–R-008) |
+| [`plans/UI-DESIGN.md`](plans/UI-DESIGN.md) | **Active** — FE/UI design of record: theme/palette, guardrails, shared components, screens on sample data (slice before R-003 polish; session plan in the sibling private repo) |
 
 ## Other
 - Root [`README.md`](../README.md) — project overview for a human landing on the repo.
