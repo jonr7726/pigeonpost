@@ -27,11 +27,19 @@ check() {
 
 echo ">>> UI-reuse ratchet (src/screens)"
 # Hard ban: the shared UsernameField exists — no raw TextInput in a screen.
-check "raw TextInput"    0  '[^a-zA-Z]TextInput'          "use src/ui/components (UsernameField)"
+check "raw TextInput"    0  '[^a-zA-Z]TextInput'          "use src/ui/components (AppInput)"
 # Hard ban: build UI from tokens/shared components, not new private widgets
 # that never get promoted (Mogul Music's leak signature).
 check "private _Screen/_Widget" 0 'function _[A-Z]|const _[A-Z][A-Za-z0-9]* = \(' \
   "put reusable pieces in src/ui/components/, or // reuse-exempt with a reason"
+# Jon's rule: a screen never imports a UI primitive; it composes shared
+# components. "We only need one" is never a reason to inline.
+check "raw <Text> in screens" 0 '<Text[ />]' "use AppText — fonts/colour/tone live there"
+check "raw ActivityIndicator" 0 '<ActivityIndicator' "use src/ui/components (Loading)"
+check "raw vertical ScrollView" 0 '<ScrollView' "use src/ui/components (List/ScreenScroll)"
+# A screen imports the shared-component barrel, not deep paths — the component
+# API surface lives in exactly one place.
+check "deep component imports" 0 "from '.*src/ui/components/[A-Za-z]" "import from the barrel src/ui/components"
 
 if (( fail )); then
   echo ">>> UI-reuse ratchet FAILED — a primitive count grew. Use the shared component."

@@ -17,7 +17,7 @@ Docs fall into three lifecycles: **Living** (kept current forever), **Reference*
 ## Living — kept current
 | Doc | Purpose |
 |-----|---------|
-| [`DESIGN.md`](DESIGN.md) | The **what** — architecture, the crypto model, the trust model. Read before structural changes. |
+| [`DESIGN.md`](DESIGN.md) | The **what** — architecture, the crypto model, the trust model, and the UI design (theme tokens/palettes, responsive rules, component library, letters + profile-widget model). Read before structural changes. |
 | [`DECISIONS.md`](DECISIONS.md) | The **why** — ADR log, one `Cnn` per locked choice. Supersede, don't edit. **Cross-cutting and client-side decisions live here** (this is the primary log; server-only entries`Snn` live in the server repo's log). |
 | [`ROADMAP.md`](ROADMAP.md) | Future work only: the feature streams + Unscheduled + Open questions. Items leave when shipped. |
 | [`reference/API.md`](reference/API.md) | **The wire contract.** The client defines it; the server repo implements it. Never copy server implementation docs here. |
@@ -33,7 +33,7 @@ Each carries a `Status:` line. Active plans are linked from `ROADMAP.md` by `R-N
 | Plan | Status |
 |------|--------|
 | [`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md) | **Active** (foundation for R-001–R-008) |
-| [`plans/UI-DESIGN.md`](plans/UI-DESIGN.md) | **Active** — FE/UI design of record: theme/palette, guardrails, shared components, screens on sample data (slice before R-003 polish; session plan in the sibling private repo) |
+| [`plans/UI-DESIGN.md`](plans/UI-DESIGN.md) | **Shipped** — the FE/UI design-of-record session that became `DESIGN.md` §UI design (C18–C21); content lives there now |
 
 ## Other
 - Root [`README.md`](../README.md) — project overview for a human landing on the repo.

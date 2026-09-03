@@ -1,19 +1,14 @@
 # UI-DESIGN — FE/UI design of record: theme, palette, shared components, screens-first shell
 
-**Status: Active** (design for review; next session implements)
+**Status: Shipped → contents folded into [`DESIGN.md`](../DESIGN.md) ("UI design", C18–C21)**
 
-This is the FE/UI design doc (per the parent procedure's ownership table, FE/UI
-how-to lives in this repo). The **session plan + friction log for this slice live
-in the server repo** (`pigeonpost-server/docs/plans/UI-LAYOUT.md`) — decisions get
-recorded there during build; finished design content graduates into this repo's
-`DESIGN.md`.
+This was the FE/UI design-of-record (per the parent procedure's ownership table,
+FE/UI how-to lives in this repo). Its content now lives in `DESIGN.md` as the UI
+design sections; the plan is kept frozen for the history in its §7 (decision
+rounds) and §8 (MySpace model notes + wireframes).
 
-Build the real UI foundation (no mockups), wired to **sample data only** — nothing
-maps to the API or DB yet. Every screen renders from a typed `sample/` module so a
-later session can swap sample data for real API calls without touching screen code.
-
-Scope: everything here is client-side (UI/theme/components/tests). The server repo
-carries only the session plan/friction doc for this slice, not design content.
+The session plan + friction log for the implementing slice live in the server
+repo (`pigeonpost-server/docs/plans/UI-FOUNDATION-HIFI.md`).
 
 ---
 

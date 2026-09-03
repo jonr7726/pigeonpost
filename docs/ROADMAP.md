@@ -23,6 +23,12 @@ The build is two streams after the foundation, per [`DESIGN.md`](DESIGN.md) and
 
 ## Next — Stream B (parallel)
 - **R-008 — Pigeon mail.** 1:1 sealed-box letter + server-held delayed release.
+- **R-014 — Wire the UI storyboard to the real streams.** The UI foundation
+  ships ahead of the BE: every screen renders from `src/data/sample/` and swaps
+  to the API mechanically as R-001–R-008 land. Includes the profile
+  customisation editor (a blob editor over C19's PageRenderer) and real seal /
+  map / media assets replacing the storyboard glyph set. Sequencing is Jon's
+  roadmap call; see `DESIGN.md` "UI design".
 
 ## Later
 - **R-009 — Public account mode.** Plaintext, unlimited reach.
