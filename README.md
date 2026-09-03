@@ -5,13 +5,11 @@ posts, stories, comments and profile are **end-to-end encrypted** so the server
 that stores them can't read them. Plus a **pigeon mail** feature: a letter that
 takes days to arrive.
 
-> **Honest about the threat model.** pigeonpost is a web app. Content is
-> encrypted in your browser and the server only ever holds ciphertext — that
-> defeats database breaches, backups leaking, and subpoenas. It is **not**
-> "zero-knowledge against a malicious operator": a web app downloads its code
-> from the server on every visit, so you are trusting us to serve honest code.
-> We make that trust *checkable* — the client is open source (AGPL-3.0) and every
-> release publishes a build hash you can verify. See [`docs/DESIGN.md`](docs/DESIGN.md#trust-model).
+> **Honest about the threat model.** A web app downloads its code from the server
+> on every visit, so you are trusting us to serve honest code. In future we plan
+> to distribute mobile applications which eliminates this concern. For now, we
+> make our trust *verifiable* by checking relesase build hashes.
+> See [`docs/DESIGN.md`](docs/DESIGN.md#trust-model).
 
 ## Status
 
@@ -35,8 +33,7 @@ sealed boxes.
 
 ## Licence
 
-[AGPL-3.0](LICENSE). If you host a modified version, you must publish your source
-— that's the point: it keeps the operator honest.
+[AGPL-3.0](LICENSE). If you host a modified version, you must publish your source.
 
 ## Deploying
 
@@ -45,4 +42,4 @@ export --platform web` → `dist/`). Our public deployment: the FE is served on
 Cloudflare Pages (auto-deploy on push to `main`), the API is self-hosted
 (pointed at via the `EXPO_PUBLIC_API_URL` build-time env var — see
 `src/data/api.ts` for the default fallback used in dev). If you self-host, set
-`EXPO_PUBLIC_API_URL` to your API origin and deploy `dist/` anywhere static.
+`EXPO_PUBLIC_API_URL` to our API origin and deploy `dist/` anywhere static.
