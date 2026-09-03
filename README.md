@@ -37,3 +37,12 @@ sealed boxes.
 
 [AGPL-3.0](LICENSE). If you host a modified version, you must publish your source
 — that's the point: it keeps the operator honest.
+
+## Deploying
+
+The web build is a standard Expo web export (static: `npx expo
+export --platform web` → `dist/`). Our public deployment: the FE is served on
+Cloudflare Pages (auto-deploy on push to `main`), the API is self-hosted
+(pointed at via the `EXPO_PUBLIC_API_URL` build-time env var — see
+`src/data/api.ts` for the default fallback used in dev). If you self-host, set
+`EXPO_PUBLIC_API_URL` to your API origin and deploy `dist/` anywhere static.
