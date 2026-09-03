@@ -216,27 +216,127 @@ content; DESIGN's trust model line for it will be added at implementation).
 
 ## 7. Open questions (Jon decides; listed in the plan so nothing is silently decided)
 
-Letters:
-- L1 — Letter length limits? (Text-only v1? or 1 photo allowed?) — *suggested:
-  text + optional 1 image*, say "long-form by design".
-- L2 — Does the recipient see an "in transit" arrival day, or only "it's coming"?
-- L3 — Drafts: save a half-written letter?
-- L4 — Can a letter be sent to yourself (mosaic/note-to-self)? (MySpace had
-  "bulletins"; a self-letter is a natural note-to-self.) — *leaning: yes, after MVP*.
+Letters — **decided with Jon (2026-09-03, round 2)**:
+- L1 — **Text-only letters** (they model a handwritten letter — no images). Hard
+  cap ≈ **10,000 characters**, never surfaced in the UI; if the writer goes over,
+  an inline error appears as they type past the cap. Most people never learn the
+  limit exists.
+- L2 — **Pigeons are visible in flight to all friends, by default:** the map shows
+  pigeons carrying letters, readable as "from/A→to" — you can deduce your friends'
+  correspondence paths. Anyone can **toggle that visibility off** for themselves
+  (privacy choice, per viewer). Map has a **friend search/filter**; the filter
+  matches a pigeon on **sender OR recipient**, so filtering to a friend shows their
+  pigeons both ways. (This is the honest-metadata call: the circle can see
+  correlation of flight paths unless a viewer toggles it off — never compare to
+  E2EE metadata-hiding marketing.)
+- L3 — **Drafts: yes**, a nice-to-have for MVP.
+- L4 — **No self-letters.**
 
 Social — **decided with Jon (2026-09-03)**:
-- S1 — **No repost/quote in v1** (your feed is your own posts; engagement is comments/likes). Appendix later if the circle wants amplification.
-- S2 — **Friends can post on your profile** (MySpace wall), as a wall post type of the blob model. v1: no per-user wall toggle (add one if noise shows up).
+- S1 — **No repost/quote — ever, not just v1.** Jon's call: sharing someone's post
+  to your own feed broadcasts *their* content to *your* audience — a privacy
+  violation, not a feature. (Revisit only if a circle ever asks for it explicitly.)
+- S2 — **Friends can post on your profile** (MySpace wall), as a wall post blob.
+  The **profile owner can delete any post on their wall** (harmful-content control);
+  see §8 for the MySpace-based shape still being settled. v1: no per-user wall
+  toggle (add one if noise shows up).
 - S3 — **No Top 8 / inner circle** (skip ranking drama).
 - S7 — **Bell icon in the TopBar** (badge dot; no sixth tab). NavBar stays 5 slots.
-- S4 — like only in v1, reactions later (unchanged leaning, wasn't contested).
-- S5/S6 — StoryRow on the feed + per-friend stories on their profile; no post editing (immutable posts) unless Jon asks.
+- S4 — **Like only for v1** if we keep an Instagram-style post surface at all —
+  S4/S5/S6 glom onto the not-yet-settled "how do posts work" question (§8).
+
+Editing / deletion — **decided (2026-09-03)**:
+- Everything a user *authors* except letters they can **edit or delete forever**:
+  their own posts, comments, wall posts, profile. Profile **owner** can also delete
+  (not edit) anything on their wall. Post edits are visible as "edited" (no history
+  surface) unless Jon asks for Facebook-style edit logs.
+- **Letters are immutable, once delivered** — like email. No edit, no delete, both
+  sides keep what was said. (Implicit: nothing models "unsending" a pigeon.)
+- S5 (stories shape) is **unresolved** pending the MySpace-design discussion.
 
 ---
 
-## 8. Implementation order for the next session (suggested commits)
+## 8. Social shape — MySpace-first (exploration for review, not yet decided)
 
-1. Theme module + both palettes + ThemeProvider + palette check script + contrast
+Jon wants to understand MySpace's actual model before settling how posts/profiles
+work. Wireframes → mind-model → the custom-HTML question.
+
+### 8.1 Wireframes (lo-fi)
+
+**Profile (MySpace-style — the profile IS the page):**
+
+    ╔══════════════════════════════════════════════╗
+    ║  @wren           [avatar]        412 friends ║
+    ║  ✎ theme editor · this page can look like THIS ║
+    ╟──────────────┬───────────────────┬───────────╢
+    ║ ABOUT ME     │ WALL              │ RECENT    ║
+    ║ bio + "who   │ Marta: message…   │ post · 2d │
+    ║  I'd like to │ Hubert: hello…    │ post · 5d │
+    ║  meet"       │ ┌──── write on   │ post · 1w │
+    ║              │ │   this wall ─┐ │           │
+    ║ pigeons: 12  │ └───────────────┘ │           │
+    ║  in flight 3 ╚═══════════════════╧═══════════╝
+
+- The profile is a **page of modules**, not a header above a grid. Modules:
+  about, wall, recent posts (reverse-chron — no curation, no ranking).
+- **Theme customisation lives on THIS page** — every profile can look different
+  (MySpace's soul). Built with the structured theme editor (8.3), palette tokens.
+- Wall (S2, decided) is its own surface with its own composer; comments *under*
+  posts stay separate.
+
+**Feed (friends page):**
+
+    ┌ ─ ─ letters band ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+    │ 🕊 pigeon arrived (unread) · 3 in flight │
+    └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+    ┌ post ────────────────────────────────┐
+    │ Hubert · 2d                          │
+    │ photo / text / blog content          │
+    │ ♡ 3   💬 2   [comment box]           │
+    └──────────────────────────────────────┘
+    friends' posts only, strictly reverse-chron
+
+Friends' posts (chronological, no algorithm) + their stories at the top, or no
+stories at all — that's exactly the S5 decision the wireframe keeps open.
+
+### 8.2 The MySpace mind (what made it, recorded so we don't guess)
+
+From the record of the product ~2004–2010:
+- **Profile-as-homepage.** Users pasted CSS/HTML into dedicated profile fields —
+  sanitised, loosely — so "custom layouts" sites existed and every profile looked
+  different. The profile was the product.
+- **Interaction surface was: wall comments, messages, bulletins (broadcast to all
+  friends), photos, Top 8.** The individual "post" as a unit-of-attention barely
+  existed — no likes on content, no share/repost, no ranking feed.
+- Everything was **reverse chronological and friend-scoped.** Discovery of new
+  people existed, but "the feed" wasn't attention-optimised — the *page* was.
+- **Bulletins** map cleanly to our letters/social split — worth remembering if
+  we want a "post to all your friends" primitive that is NOT a letter (they're
+  different surfaces, and MySpace kept them different for this reason).
+
+### 8.3 Custom profile HTML — security take
+
+MySpace allowed users to submit HTML/CSS rendered in-page. That's how it worked —
+and why it was an **XSS farm**: sanitiser bugs let injection (the "Samy worm" —
+1M+ friends in 20 hours — was a MySpace-profile XSS), session theft, defacement.
+The stakes are *higher* here: E2EE means the decrypted content lives in the
+browser, so an XSS isn't "stub a profile", it's **arbitrary JS running inside the
+render app**, able to read other friends' plaintext for the session.
+
+So the safe and MySpace-faithful shape is a **structured theme editor, not raw
+HTML**: user picks modules (about / wall / recent / music / lore), palette-token
+colours (dark/light become *user themes* — exactly why the token system earns its
+keep), headline art, accent glyphs. Stored as a canonical theme blob, rendered by
+our components — zero user markup executes, ever.
+
+If real HTML is ever wanted: strict allowlist sanitizer + no script/handlers +
+CSP + sandboxed iframe (the Tumblr/Reddit approach) — the honest fallback, but the
+riskiest surface in an E2EE app. **Recommendation: theme editor now; revisit raw
+HTML only with a threat-model doc if a real ask appears.**
+
+---
+
+## 9. Implementation order for the next session (suggested commits) + both palettes + ThemeProvider + palette check script + contrast
    test; extend reuse ratchet (§2). Docs lift §1/§2 into `DESIGN.md` + `TESTING.md`.
 2. Core primitive components (AppText → … → Modal) + component tests for the
    key states (loading/empty/error/populated, per `TESTING.md` tier 2).
