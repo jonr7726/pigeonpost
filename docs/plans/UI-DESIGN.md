@@ -71,7 +71,10 @@ Success/error/warning keep hue, adjust lightness. `paper`/`ink`/`wax` stay natur
 
 **The toggle:** lives in Settings (and the account screen header initially). Default
 **dark** (it's the product's identity), `prefers-color-scheme` on first run, persisted
-after the user touches it. Implementation note (Expo web): a `data-theme`-style class
+after the user touches it. The toggle themes **global chrome** (NavBar, TopBar,
+banners — what the *viewer* always sees). Profile **pages** are separately themed by
+their owner (§8.4): a light profile visited in your dark chrome is intentional, not a
+bug. Implementation note (Expo web): a `data-theme`-style class
 on the root plus tokens from context — no CSS vars needed on RN-Web; components read
 `palette` via the hook. **Components must always read the hook, never import
 `palette.ts` directly** (ratchet-checked, §2) so the mode switch is instant and
@@ -137,6 +140,15 @@ components. "We only need one" is never a reason to inline — build the generic
       CommentRow, LikeButton, AvatarButton (composed from the above)
       ThemeToggle    (sun/moon segmented control)
 
+    src/ui/profile/                  ← the widget engine (§8.4) — built now, editor later
+      PageRenderer   (renders an ordered layout of widget instances; takes the
+                      profile's page-theme blob + the layout blob — the future
+                      editor edits exactly these blobs, nothing else)
+      widgets/       (one component per widget type + a registry: About, Wall,
+                      RecentPosts, Pigeons — each accepts a per-widget theme)
+      widgets/…      (v1 layout is hardcoded as a layout blob; the editor later
+                      is just an editor for that blob)
+
 Nothing is screen-specific. Components exist even where v1 shows them once
 (SearchBar, Banner…) — that's the standing rule.
 
@@ -149,7 +161,9 @@ Nothing is screen-specific. Components exist even where v1 shows them once
       sample.ts         ← deterministic seed: 4–6 users, bios, avatars (initials),
                           stories, mixed posts (photo/text/blog + comments/likes),
                           letters in every state (in-transit, delivered-sealed,
-                          opened, overdue), friend requests (one w/ message)
+                          opened, overdue), friend requests (one w/ message),
+                          **two profile layout/theme blobs** (Instagram-ish and
+                          MySpace-maximal) proving the §8.4 engine before any editor
       useSampleData.ts  ← assumed-reactive store (useState/useMemo config so screens
                           behave like the real thing; swapped for API later)
 
@@ -165,8 +179,10 @@ mechanical. `src/data/api.ts` stays untouched this slice.
    Settings) + TopBar. Chosen so every later screen lands inside it.
 1. **Feed (Discover/home)** — StoryRow on top (friends' 24h), then friends' latest
    posts via Feed/PostCard.
-2. **Account / Profile** — top: avatar, username, friend count, bio, ThemeToggle row;
-   then stories + historical Posts grid → tapping a grid cell opens the post.
+2. **Account / Profile** — a widget page rendered by `PageRenderer` (§8.4): the
+   sample layout/theme blob decides what shows. Own profile adds a "change theme"
+   entry point later (editor is a later feature); a ThemeToggle row appears only
+   in Settings. Letters stats land as a `Pigeons` widget.
 3. **Post detail** — PostCard full + comments + like.
 4. **Letters — inbox** — threaded list: sealed (arrived, unopened → tap = Seal
    break animation, once), open (read), in transit ("~3 days", travelling-pigeon
@@ -257,7 +273,23 @@ Editing / deletion — **decided (2026-09-03)**:
   surface) unless Jon asks for Facebook-style edit logs.
 - **Letters are immutable, once delivered** — like email. No edit, no delete, both
   sides keep what was said. (Implicit: nothing models "unsending" a pigeon.)
-- S5 (stories shape) is **unresolved** pending the MySpace-design discussion.
+Social — **decided with Jon (2026-09-03, round 3 — after the MySpace walk-through)**:
+- S1 — clarified: **no repost ever** (already recorded — privacy violation).
+- S7 — clarification: **letters are a separate tab** (NavBar slot 1), so the
+  friends feed is purely Instagram-themed: **stories at the top**, then friends'
+  posts. No letters band on the feed.
+- S5 — resolved: **stories top of the Feed**; per-friend stories reachable via
+  a profile widget. (Widget model makes this a layout option, not a product fork.)
+- **Profiles are MySpace-style customisable widget pages** (§8.4): page-level
+  owner-chosen light/dark + colours, per-widget colour overrides, compose-able
+  widgets (a user could even drop the posts widget), presets + saved layouts +
+  switching later. Profile pages do NOT follow the viewer's app light/dark —
+  global chrome (NavBar/TopBar) always follows the viewer's own app theme.
+- **Customisation editor is a later feature**, but the widget/`PageRenderer`
+  engine is built now with the v1 layout hardcoded — the editor later is just an
+  editor for the layout/theme blob. §8.4.
+- Sample layouts: two in sample data (Instagram-ish + MySpace-maximal) prove the
+  engine before any editor exists.
 
 ---
 
@@ -268,32 +300,38 @@ work. Wireframes → mind-model → the custom-HTML question.
 
 ### 8.1 Wireframes (lo-fi)
 
-**Profile (MySpace-style — the profile IS the page):**
+**Profile (MySpace-style — the profile IS a customisable widget page):**
 
     ╔══════════════════════════════════════════════╗
     ║  @wren           [avatar]        412 friends ║
-    ║  ✎ theme editor · this page can look like THIS ║
     ╟──────────────┬───────────────────┬───────────╢
     ║ ABOUT ME     │ WALL              │ RECENT    ║
     ║ bio + "who   │ Marta: message…   │ post · 2d │
     ║  I'd like to │ Hubert: hello…    │ post · 5d │
-    ║  meet"       │ ┌──── write on   │ post · 1w │
-    ║              │ │   this wall ─┐ │           │
-    ║ pigeons: 12  │ └───────────────┘ │           │
-    ║  in flight 3 ╚═══════════════════╧═══════════╝
+    ║  meet"       │ ┌ write on the  ┐ │ post · 1w │
+    ║ pigeons: 12  │ │  wall          │ │           │
+    ║  in flight 3 ╚═╧════════════════╧═══════════╝
+    page-level theme (owner picks light/dark + colours) covers EVERYTHING except
+    the global chrome (nav bars), which follows the *viewer's* app theme
 
-- The profile is a **page of modules**, not a header above a grid. Modules:
-  about, wall, recent posts (reverse-chron — no curation, no ranking).
-- **Theme customisation lives on THIS page** — every profile can look different
-  (MySpace's soul). Built with the structured theme editor (8.3), palette tokens.
+- The profile is a **page of widget modules**, not a header above a grid.
+- **Page theme + per-module colours** (8.4): the owner picks the page's light/dark
+  and colour set; individual modules can each carry their own accent/colours —
+  an all-brass minimal profile, or total 2006 chaos, both render honestly.
+- **Modules are widgets, composeable like widgets:** the layout is an ordered
+  list of widget instances (about / wall / recent-posts / …). A user can compose
+  an Instagram-ish layout, or *drop the posts widget entirely and never use the
+  feature*. Presets + saved layouts they can switch between (later — see 8.4).
+- v1 hardcodes the layout but routes every section through the **same widget
+  renderer** the future editor will drive — the editor becomes a feature of
+  `PageRenderer` + a layout blob, not a rewrite.
 - Wall (S2, decided) is its own surface with its own composer; comments *under*
   posts stay separate.
 
-**Feed (friends page):**
+**Feed (friends page — Instagram-themed; letters are a separate tab):**
 
-    ┌ ─ ─ letters band ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
-    │ 🕊 pigeon arrived (unread) · 3 in flight │
-    └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+    ┌ stories →  ( friend rows w/ 24h rings ) ─┐
+    ├──────────────────────────────────────────┤
     ┌ post ────────────────────────────────┐
     │ Hubert · 2d                          │
     │ photo / text / blog content          │
@@ -301,8 +339,13 @@ work. Wireframes → mind-model → the custom-HTML question.
     └──────────────────────────────────────┘
     friends' posts only, strictly reverse-chron
 
-Friends' posts (chronological, no algorithm) + their stories at the top, or no
-stories at all — that's exactly the S5 decision the wireframe keeps open.
+No letters band on the feed — the Letters tab (NavBar slot 1) owns everything
+pigeon. The feed is the Instagram-style friends surface: stories on top, then
+their posts, strictly chronological, no ranking.
+
+Stories shape (S5) is now: **stories top of the Feed** (the row above), with
+per-friend story lists reachable from their profile — the widget model means
+"profile stories" is just a widget option there, which de-dramatises the choice.
 
 ### 8.2 The MySpace mind (what made it, recorded so we don't guess)
 
@@ -328,16 +371,42 @@ The stakes are *higher* here: E2EE means the decrypted content lives in the
 browser, so an XSS isn't "stub a profile", it's **arbitrary JS running inside the
 render app**, able to read other friends' plaintext for the session.
 
-So the safe and MySpace-faithful shape is a **structured theme editor, not raw
-HTML**: user picks modules (about / wall / recent / music / lore), palette-token
-colours (dark/light become *user themes* — exactly why the token system earns its
-keep), headline art, accent glyphs. Stored as a canonical theme blob, rendered by
-our components — zero user markup executes, ever.
+So the safe and MySpace-faithful shape is a **structured theme editor, never raw
+HTML**: the user composes from a curated widget set (about / wall / recent / …) and
+picks colours from **palette tokens** — page-level light/dark + colour set, plus
+per-widget colour picks. Stored as a canonical theme/layout blob, rendered by our
+`PageRenderer` with zero user markup executed. §8.4 is the decided engine shape.
 
-If real HTML is ever wanted: strict allowlist sanitizer + no script/handlers +
-CSP + sandboxed iframe (the Tumblr/Reddit approach) — the honest fallback, but the
-riskiest surface in an E2EE app. **Recommendation: theme editor now; revisit raw
-HTML only with a threat-model doc if a real ask appears.**
+### 8.4 Profile theming engine (decided shape; editor itself is a later feature)
+
+Design now, build later — with the *engine* built now:
+
+- **The profile does not follow the app's light/dark toggle.** The chrome someone
+  always sees following *their own* app theme is: the NavBar, TopBar, system
+  banners. A profile **page** is themed by its owner: they pick the page's
+  mode (light or dark) and its colour picks, so a light page next to your dark
+  chrome is normal, and intentional.
+- **Two levels of theme:** ① page-level (mode + palette colours for bg/panel/text,
+  accent), ② per-widget overrides (each widget can carry its own accent/paper
+  colours — MySpace module boxes were individually styled; we allow the same).
+- **Widgets:** each module is a `ProfileWidget` (about / wall / recent-posts /
+  later: music, events, lore). Registered in one widget registry so the renderer,
+  the sample data, and the eventual editor all see the same catalogue.
+- **Layout = an ordered list of widget instances** (the "profile layout blob").
+  v1 **hardcodes the layout but renders it through `PageRenderer`** exactly as the
+  future editor would drive it — customisation later becomes a feature of the
+  blob + an editor screen, not a rebuild. Jon's framing: *hardcode the profile
+  layout, but build the customisable-profile-layout renderer engine.*
+- **Presets + saved layouts + switching between them** are part of the later
+  editor (a preset is just a layout/theme blob we ship; saved layouts are blobs
+  you own — stored as a profile blob type per C08). Wire the `PageRenderer` API
+  shape now so this drops in.
+- **Sample-data proof (this slice):** the client ships two sample layouts (an
+  Instagram-ish one and a MySpace-maximal one) rendered by the same engine, so the
+  engine is exercised before the editor exists.
+
+The earlier recommendation here was just "structured theme editor"; 8.4 is now
+the decided shape and covers the security outcome (no markup ever executes).
 
 ---
 
