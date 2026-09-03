@@ -31,6 +31,11 @@ export const stories: Story[] = [
 
 export const posts: Post[] = [
   {
+    id: 'p-5', author: me, createdAt: hours(9), kind: 'text',
+    text: 'chart update: moved my pin to the east lofts for the season — come find me',
+    likes: 4, liked: false, commentCount: 1,
+  },
+  {
     id: 'p-1', author: users.hubert, createdAt: hours(26), kind: 'photo',
     text: 'sunday market favourites', likes: 3, liked: false, commentCount: 2,
   },

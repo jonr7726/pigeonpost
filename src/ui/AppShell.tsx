@@ -17,10 +17,11 @@ import { useSampleData } from '../data/sample/useSampleData';
 // The bottom tab NavBar (mobile/tablet) vs the SideRail (desktop): same five
 // tabs, same placement rule — every later screen lands inside this shell.
 // Global chrome always follows the viewer's own app theme.
-export function AppShell() {
+export function AppShell({ signedIn }: { signedIn?: { username: string } }) {
   const { palette } = useTheme();
   const router = useRouter();
   const { me } = useSampleData();
+  const railName = signedIn?.username ?? me.username;
   const mode = useLayoutMode();
   const top = router.stack[router.stack.length - 1];
 
@@ -45,7 +46,7 @@ export function AppShell() {
     <View style={[styles.fill, { backgroundColor: palette.bg }]}>
       {mode === 'desktop' ? (
         <View style={styles.desktop}>
-          <SideRail active={router.tab} onSelect={router.goTab} username={me.username} />
+          <SideRail active={router.tab} onSelect={router.goTab} username={railName} />
           <View style={styles.main}>
             <View style={styles.inner}>{body}</View>
           </View>

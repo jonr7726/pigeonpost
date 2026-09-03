@@ -18,7 +18,7 @@ export default function App() {
         {user == null ? (
           <AccountScreen onSignedIn={setUser} />
         ) : (
-          <AppShell />
+          <AppShell signedIn={user} />
         )}
       </RouterProvider>
     </ThemeProvider>
