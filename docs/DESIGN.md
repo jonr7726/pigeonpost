@@ -82,7 +82,7 @@ in [`reference/API.md`](reference/API.md); this repo remains the open-source one
 From the client's point of view the server is only "an API that stores ciphertext",
 so hosting choices don't leak into client code or docs.
 
-## UI design (C18–C20)
+## UI design (C18–C22)
 
 The FE/UI how-to lives here (per the parent procedure's ownership table). The
 exhaustive design notes, wireframes and open questions that led here were
@@ -175,3 +175,43 @@ a reason to inline; build the generic one.
 - Seal art is decorative (never in the blob); the map position is profile-type
   blob data; the server computing delivery from two coordinates is the honest
   timing-metadata trade (see [Trust model](#trust-model)).
+
+### 4.6 Old-Facebook desktop chrome, feed and groups as one component (C22)
+
+The desktop storyboard deliberately copies old Facebook: a pigeon mark top-left,
+one search box (friends/posts/comments/letters — UI only this slice), then
+word links **Home / Feed / Letters / Events**, a people icon (friends),
+notifications, settings, and the avatar dropdown (switch account + log out,
+Instagram-style). A **left rail** (desktop only) holds Groups above Shortcuts;
+Shortcuts are configurable links (＋ to add name/hyperlink/icon; hover raises
+an ✕ that removes with the shared confirm). No feed/events toggle in the rail —
+**Events is a nav word**.
+
+- **Feed and groups share one pane.** The main feed and a group render the same
+  composer (always-open 4-line photo/video + tag-friends box), the same
+  `PostCard`, and the same `TwoColumns` layout: a posts column plus a fixed-width
+  right column behind a hairline. Deliberately different only: the right column
+  content (feed = stories + friends cards; group = settings cards + cover photo)
+  and no stories row inside a group.
+- **Right column sections are titled cards, not a card around the column.** The
+  columns stay boxless; each column divides into `Card`s (group settings /
+  members / invite friends; feed stories / friends).
+- **Groups: invite-only mini-feeds.** Settings cards hold cover-photo change
+  (confirm "applies"), rename, a searchable members list, a search + confirm
+  invite picker, join-request accept/decline, and leave. Groups are reachable
+  from the rail and (mobile) the ≡ More sheet.
+- **Events:** a bare ＋ create button (no card) and a **whole-page** create
+  screen (photo plate, title, when/where, big description, all-friends vs
+  invite-specific with a staged invite search, create/back) → the read-only
+  full-page event screen.
+- **People lists are one component** — searchable, bounded-scroll (`PeopleList`),
+  used for the feed friends bar, group members, and event members.
+- **Scroll is per-pane.** The document never scrolls: the app root is a fixed
+  height, each `ScrollColumn` (`TwoColumns`) is an independent `ScrollView` with
+  its own visible scrollbar (BrassRail reports only the tallest pane). The nav
+  band clears the first cards with a top margin.
+- **Own posts** get **edit** (inline text box, save/cancel — never navigates)
+  and **delete** (red confirm) top-right. Posts confirm before posting; a
+  half-typed post or event raises a **discard** confirmation on navigation.
+- **Confirmation modal** is one `ConfirmModal` everywhere: cancel bordered
+  bottom-left, primary bottom-right, red when a warning.
