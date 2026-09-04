@@ -3,14 +3,15 @@ import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { AppText } from './AppText';
 import { Avatar } from './Avatar';
+import { Icon, type IconName } from './Icon';
 import { UserMenu } from './UserMenu';
 import { useTheme } from '../theme/useTheme';
 
 // Desktop TopNav, old-Facebook-shaped: app icon far left, one search box
-// (friends/posts/comments/letters), then right-aligned — home / feed /
-// letters / events as WORDS, friends as a people icon, then the bell, gear
-// and the user dropdown. Global chrome only.
-export type TopNavTab = 'home' | 'feed' | 'letters' | 'events' | 'friends' | 'settings';
+// (friends/posts/comments/letters), then the icon row — home (→ your
+// profile), feed, letters, friends, notifications, settings — and the user
+// dropdown. Global chrome only.
+export type TopNavTab = 'home' | 'feed' | 'letters' | 'friends' | 'settings';
 
 export function TopNav({
   active,
@@ -26,12 +27,7 @@ export function TopNav({
   const { palette } = useTheme();
   const [query, setQuery] = useState('');
 
-  const words: { id: TopNavTab; label: string }[] = [
-    { id: 'home', label: 'Home' },
-    { id: 'feed', label: 'Feed' },
-    { id: 'letters', label: 'Letters' },
-    { id: 'events', label: 'Events' },
-  ];
+  const textItems: TopNavTab[] = ['home', 'feed', 'letters', 'events'];
 
   return (
     <View testID="topnav" style={styles.bandWrap}>
@@ -53,7 +49,7 @@ export function TopNav({
         </View>
 
         <View style={styles.right}>
-          {words.map(({ id, label }) => {
+          {items.map(({ id, label, glyph }) => {
             const isOn = active === id;
             return (
               <Pressable
@@ -62,26 +58,17 @@ export function TopNav({
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isOn }}
                 accessibilityLabel={label}
-                style={[styles.navItem, isOn && { borderBottomColor: palette.accent, borderBottomWidth: 3 }]}
+                style={() => [styles.navItem, isOn && { borderBottomColor: palette.accent, borderBottomWidth: 3 }, ]}
               >
-                <AppText style={{ color: isOn ? palette.accent : palette.textDim, fontWeight: isOn ? '600' : '400' }}>{label}</AppText>
+                <AppText style={[styles.navGlyph, { color: isOn ? palette.accent : palette.textDim }]}>{glyph}</AppText>
               </Pressable>
             );
           })}
           <Pressable
-            onPress={() => onSelect('friends')}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active === 'friends' }}
-            accessibilityLabel="friends"
-            style={[styles.navItem, active === 'friends' && { borderBottomColor: palette.accent, borderBottomWidth: 3 }]}
-          >
-            <AppText style={{ color: active === 'friends' ? palette.accent : palette.textDim, fontSize: 16 }}>👥</AppText>
-          </Pressable>
-          <Pressable
             onPress={() => onSelect('feed')}
             accessibilityRole="button"
             accessibilityLabel="notifications"
-            style={styles.navItem}
+            style={() => [styles.navItem, ]}
           >
             <AppText style={styles.navGlyph}>🔔</AppText>
             {bellActive && <View style={[styles.badge, { backgroundColor: palette.error }]} />}
@@ -91,7 +78,7 @@ export function TopNav({
             accessibilityRole="tab"
             accessibilityState={{ selected: active === 'settings' }}
             accessibilityLabel="settings"
-            style={[styles.navItem, active === 'settings' && { borderBottomColor: palette.accent, borderBottomWidth: 3 }]}
+            style={() => [styles.navItem, active === 'settings' && { borderBottomColor: palette.accent, borderBottomWidth: 3 }, ]}
           >
             <AppText style={styles.navGlyph}>⚙</AppText>
           </Pressable>
@@ -104,7 +91,7 @@ export function TopNav({
                 accessibilityRole="button"
                 accessibilityLabel={`account menu for ${username}`}
                 accessibilityState={{ expanded: openNow }}
-                style={styles.me}
+                style={() => [styles.me, ]}
               >
                 <Avatar name={username} size={28} />
                 <AppText size="sm" style={{ color: palette.text }}>{username}</AppText>
@@ -132,8 +119,8 @@ const styles = StyleSheet.create({
   searchIcon: { fontSize: 14 },
   searchInput: { flex: 1, fontSize: 13, paddingVertical: 0 },
   right: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: 'auto' },
-  navItem: { paddingHorizontal: 10, paddingVertical: 10, borderRadius: 6 },
+  navItem: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6, borderBottomWidth: 0 },
   navGlyph: { fontSize: 16 },
-  badge: { width: 8, height: 8, borderRadius: 4, position: 'absolute' as never, top: 8, right: 8 },
+  badge: { width: 8, height: 8, borderRadius: 4, position: 'absolute' as const, top: 8, right: 8 },
   me: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 18 },
 });

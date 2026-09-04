@@ -41,5 +41,5 @@ export function Modal({
 const styles = StyleSheet.create({
   shade: { flex: 1 },
   spot: { flex: 1, justifyContent: 'center', padding: 24 },
-  panel: { gap: 12, marginHorizontal: 'auto', width: '100%', maxWidth: 480 },
+  panel: { gap: 12, marginHorizontal: 'auto', width: '100%', maxWidth: 420 },
 });

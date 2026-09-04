@@ -1,5 +1,5 @@
 import type { ProfilePageBlob } from '../../ui/profile/blobs';
-import type { Comment, Friend, FriendRequest, Letter, Post, Story, WallPost } from './types-shared';
+import type { Comment, Friend, FriendRequest, Group, Letter, PigeonEvent, Post, Story, WallPost } from './types-shared';
 
 // Deterministic seed. Times are offsets from a fixed epoch so stories stay
 // "fresh" and letters stay pending whenever the app opens (storyboard data).
@@ -130,3 +130,40 @@ export const myProfile = {
   layout: instagramLayout,
   stats: { inFlight: 3, delivered: 12, received: 21 } as const,
 };
+
+export const events: PigeonEvent[] = [
+  {
+    id: 'e-1', author: me, createdAt: hours(4), title: 'banding-day tea',
+    text: 'ring this year’s fledglings, then jam and toast in the warm loft.',
+    when: 'Sat 14th, mid-afternoon', where: 'the east loft', scope: 'friends',
+    invited: [], going: 3, liked: false,
+  },
+  {
+    id: 'e-2', author: users.marta, createdAt: hours(30), title: 'letter-weaving afternoon',
+    text: 'bring one letter you read once and never forgot — we weave around the words.',
+    when: 'Sun 15th, 2pm', where: 'Nia’s veranda', scope: 'invited',
+    invited: [users.hubert, users.nia, me], going: 2, liked: true,
+  },
+];
+
+export const groups: Group[] = [
+  {
+    id: 'g-lofts', name: 'East Lofts Circle', description: 'race results, banding tips, loft trades — east side only.',
+    members: [me, users.marta, users.hubert, users.otto],
+    posts: [
+      { id: 'gp-1', author: users.otto, createdAt: hours(6), kind: 'text', text: 'clocked the young birds at 11:42 — north wind helped', likes: 3, liked: false, commentCount: 1 },
+      { id: 'gp-2', author: users.marta, createdAt: hours(20), kind: 'text', text: 'reminder: banding tea is at MY loft this time, not Nia’s', likes: 2, liked: true, commentCount: 0 },
+    ],
+    requests: [users.nia],
+    liked: {},
+  },
+  {
+    id: 'g-stamps', name: 'Seal & Stamp Circle', description: 'wax seals, chop carving, postmarks worth keeping.',
+    members: [users.marta, users.nia],
+    posts: [
+      { id: 'gp-3', author: users.nia, createdAt: hours(50), kind: 'photo', text: 'carved a pigeon into my new chop — first press is tomorrow', likes: 5, liked: false, commentCount: 2 },
+    ],
+    requests: [],
+    liked: {},
+  },
+];
