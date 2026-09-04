@@ -1,8 +1,12 @@
-import { StyleSheet, ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-// The one vertical column scroller: fills its container's height and scrolls
-// its content. The feed column and the right settings/people column each own
-// their scroll, so the feed/group screens never scroll the whole page.
+import { useTheme } from '../theme/useTheme';
+
+// One independently-scrolling column. Fills its container height and scrolls
+// only its own content (the feed/posts column and the right settings/people
+// column scroll separately — the page never scrolls). Native scrollbars are
+// left ON so each column shows a visible rail, in contrast to the decorative
+// BrassRail which reports the whole page.
 export function ScrollColumn({
   children,
   style,
@@ -25,16 +29,26 @@ export function ScrollColumn({
   );
 }
 
-// The two-column pane used by the feed and group screens: main column is
-// flexible, the right column is fixed width with the hairline separator bar
-// groups and feed share. Both halves scroll independently.
-export function TwoColumns({ main, side }: { main: React.ReactNode; side: React.ReactNode }) {
+// The two-column pane shared by the feed and group screens: the main (feed /
+// posts) column is flexible, the right (settings / people) column is a fixed
+// width behind a hairline separator. Both columns scroll independently, with
+// the top margin clearing the nav band so the first cards aren't flush.
+export function TwoColumns({
+  main,
+  side,
+  sideWidth = 340,
+}: {
+  main: React.ReactNode;
+  side: React.ReactNode;
+  sideWidth?: number;
+}) {
+  const { palette } = useTheme();
   return (
     <View style={styles.row}>
       <View style={styles.mainBox}>
         <ScrollColumn>{main}</ScrollColumn>
       </View>
-      <View style={styles.sideBox}>
+      <View style={[styles.sideBox, { width: sideWidth, borderLeftColor: palette.panelEdge }]}>
         <ScrollColumn>{side}</ScrollColumn>
       </View>
     </View>
@@ -44,8 +58,8 @@ export function TwoColumns({ main, side }: { main: React.ReactNode; side: React.
 const styles = StyleSheet.create({
   fill: { flex: 1 },
   grow: { flex: 1, flexGrow: 1, flexBasis: 0 },
-  content: { paddingTop: 16, paddingBottom: 32 },
-  row: { flex: 1, flexDirection: 'row', gap: 16 },
-  sideBox: { width: 320, borderLeftWidth: 1, paddingLeft: 16 },
+  content: { paddingTop: 20, paddingBottom: 40 },
+  row: { flex: 1, flexDirection: 'row', gap: 20 },
   mainBox: { flex: 1 },
+  sideBox: { borderLeftWidth: 1, paddingLeft: 16 },
 });

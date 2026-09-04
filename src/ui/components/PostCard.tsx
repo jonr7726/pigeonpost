@@ -18,55 +18,56 @@ export function PostCard({ post, onPress, onLike, onEdit, onDelete }: { post: Po
   const [next, setNext] = useState('');
   const mine = onEdit != null || onDelete != null;
   return (
-    <Pressable onPress={onPress} disabled={editing} accessibilityRole="button" accessibilityState={{ disabled: !onPress || editing }}>
-      <Panel>
-        <View style={styles.header}>
-          <Avatar name={post.author.name} size={36} />
-          <View style={styles.meta}>
-            <AppText>{post.author.name}</AppText>
-            <AppText tone="dim" size="sm">{`@${post.author.username} · ${timeAgo(post.createdAt)}`}</AppText>
-          </View>
-          {(onEdit != null || onDelete != null) && (
-            <View style={styles.owner}>
-              {onEdit != null && (
-                <Pressable onPress={() => setEditing(!editing)} accessibilityRole="button" style={styles.ownerBtn} testID={`edit-${post.id}`}>
-                  <AppText size="sm" style={{ color: palette.accent }}>{editing ? 'editing…' : 'edit'}</AppText>
-                </Pressable>
-              )}
-              <DeleteButton post={post} onDelete={onDelete} />
-            </View>
-          )}
+    <Panel>
+      <View style={styles.header}>
+        <Avatar name={post.author.name} size={36} />
+        <View style={styles.meta}>
+          <AppText>{post.author.name}</AppText>
+          <AppText tone="dim" size="sm">{`@${post.author.username} · ${timeAgo(post.createdAt)}`}</AppText>
         </View>
-        {post.kind === 'photo' && <PhotoPlate seed={post.id} />}
-        {editing ? (
-          <View style={{ gap: 6 }}>
-            <TextInputPlaceholder post={post} onNext={setNext} />
-            <View style={styles.row}>
-              <Pressable
-                onPress={() => {
-                  onEdit?.(next);
-                  setEditing(false);
-                }}
-                accessibilityRole="button"
-                style={[styles.ownerBtn, styles.solidBtn, { backgroundColor: palette.accent }]}
-                testID={`save-${post.id}`}
-              >
-                <AppText size="sm" style={{ color: palette.bg }}>save</AppText>
+        {(onEdit != null || onDelete != null) && (
+          <View style={styles.owner}>
+            {onEdit != null && (
+              <Pressable onPress={() => setEditing(!editing)} accessibilityRole="button" style={styles.ownerBtn} testID={`edit-${post.id}`}>
+                <AppText size="sm" style={{ color: palette.accent }}>{editing ? 'editing…' : 'edit'}</AppText>
               </Pressable>
-              <Pressable
-                onPress={() => setEditing(false)}
-                accessibilityRole="button"
-                style={[styles.ownerBtn, styles.ownerBorder, { borderColor: palette.panelEdge }]}
-              >
-                <AppText size="sm" tone="dim">cancel</AppText>
-              </Pressable>
-            </View>
+            )}
+            <DeleteButton post={post} onDelete={onDelete} />
           </View>
-        ) : (
+        )}
+      </View>
+      {post.kind === 'photo' && <PhotoPlate seed={post.id} />}
+      {editing ? (
+        <View style={{ gap: 6 }}>
+          <TextInputPlaceholder post={post} onNext={setNext} />
+          <View style={styles.row}>
+            <Pressable
+              onPress={() => {
+                onEdit?.(next);
+                setEditing(false);
+              }}
+              accessibilityRole="button"
+              style={[styles.ownerBtn, styles.solidBtn, { backgroundColor: palette.accent }]}
+              testID={`save-${post.id}`}
+            >
+              <AppText size="sm" style={{ color: palette.bg }}>save</AppText>
+            </Pressable>
+            <Pressable
+              onPress={() => setEditing(false)}
+              accessibilityRole="button"
+              style={[styles.ownerBtn, styles.ownerBorder, { borderColor: palette.panelEdge }]}
+            >
+              <AppText size="sm" tone="dim">cancel</AppText>
+            </Pressable>
+          </View>
+        </View>
+      ) : (
+        <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ disabled: !onPress }}>
           <AppText style={styles.body} tone={post.kind === 'text' ? 'body' : 'dim'}>
             {post.kind === 'blog' ? post.excerpt : post.text}
           </AppText>
-        )}
+        </Pressable>
+      )}
         <View style={styles.actions}>
           <LikeButton count={post.likes} liked={post.liked} onPress={onLike} />
           <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="comments" style={styles.row}>
@@ -75,8 +76,7 @@ export function PostCard({ post, onPress, onLike, onEdit, onDelete }: { post: Po
           </Pressable>
           {post.kind === 'blog' && <AppText tone="accent" size="sm">read post →</AppText>}
         </View>
-      </Panel>
-    </Pressable>
+    </Panel>
   );
 }
 
