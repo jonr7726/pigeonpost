@@ -62,14 +62,14 @@ export function LetterCompose({ onSent }: { onSent?: () => void }) {
             accessibilityLabel={`write to ${f.name}`}
             style={[styles.pick, { borderColor: palette.panelEdge, borderWidth: 1 }, to === f.username && { borderColor: palette.accent }]}
           >
-            <AppText size="sm" style={{ color: palette.ink, opacity: to === f.username ? 1 : 0.75 }}>
+            <AppText size="sm" style={{ color: palette.text, opacity: to === f.username ? 1 : 0.75 }}>
               {f.name}
             </AppText>
           </Pressable>
         ))}
       </View>
       {friend == null && (
-        <AppText align="center" style={{ color: palette.ink, opacity: 0.8 }}>
+        <AppText align="center" style={{ color: palette.text, opacity: 0.8 }}>
           a pigeon can only fly between friends — choose one above
         </AppText>
       )}

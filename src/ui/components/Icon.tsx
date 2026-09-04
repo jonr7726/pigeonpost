@@ -53,11 +53,11 @@ const glyphs: Record<IconName, string> = {
 };
 
 // `plain` is reserved for forcing text visuals once real assets land.
-export function Icon({ name, size = 18 }: { name: IconName; plain?: boolean; size?: number }) {
+export function Icon({ name, size = 18, color }: { name: IconName; plain?: boolean; size?: number; color?: string }) {
   const { palette } = useTheme();
   return (
     <AppText
-      style={{ fontSize: size, lineHeight: size + 4, color: palette.text }}
+      style={{ fontSize: size, lineHeight: size + 4, color: color ?? palette.text }}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >

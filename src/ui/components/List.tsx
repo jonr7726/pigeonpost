@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
   error: { padding: 24 },
   screen: { paddingBottom: 32 },
   grow: { flex: 1, flexGrow: 1, flexBasis: 0 },
-  // a divided separator must sit between two breaths of air, not against the
-  // cards above and below it
-  sep: { marginTop: 10, marginBottom: 10 },
+  // a divided separator sits between two equal breaths of air: the item
+  // wrapper's paddingBottom is the gap below the hairline, so the card ↔
+  // hairline gap above can't double it up
+  sep: { marginTop: 10 },
 });

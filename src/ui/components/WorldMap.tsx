@@ -85,7 +85,7 @@ export function WorldMap({
       {cog && (
         <View style={[styles.corner, styles.topRight]} pointerEvents="box-none">
           <Pressable onPress={() => setCogOpen((open) => !open)} accessibilityRole="button" accessibilityLabel="chart options" style={[styles.cornerButton, { backgroundColor: palette.paper }]}>
-            <Icon name="settings" size={16} />
+            <Icon name="settings" size={16} color={palette.ink} />
           </Pressable>
           {cogOpen && (
             <View style={[styles.cogMenu, { backgroundColor: palette.panel, borderColor: palette.panelEdge }]}>
@@ -111,7 +111,7 @@ export function WorldMap({
           accessibilityLabel="open the chart fullscreen"
           style={[styles.cornerButton, styles.bottomRight, { backgroundColor: palette.paper }]}
         >
-          <Icon name="expand" size={16} />
+          <Icon name="expand" size={16} color={palette.ink} />
         </Pressable>
       )}
     </View>
