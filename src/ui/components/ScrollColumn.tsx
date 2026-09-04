@@ -31,8 +31,12 @@ export function ScrollColumn({
 export function TwoColumns({ main, side }: { main: React.ReactNode; side: React.ReactNode }) {
   return (
     <View style={styles.row}>
-      <View style={styles.mainBox}>{main}</View>
-      <View style={styles.sideBox}>{side}</View>
+      <View style={styles.mainBox}>
+        <ScrollColumn>{main}</ScrollColumn>
+      </View>
+      <View style={styles.sideBox}>
+        <ScrollColumn>{side}</ScrollColumn>
+      </View>
     </View>
   );
 }

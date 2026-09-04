@@ -18,7 +18,7 @@ export function PostCard({ post, onPress, onLike, onEdit, onDelete }: { post: Po
   const [next, setNext] = useState('');
   const mine = onEdit != null || onDelete != null;
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ disabled: !onPress }}>
+    <Pressable onPress={onPress} disabled={editing} accessibilityRole="button" accessibilityState={{ disabled: !onPress || editing }}>
       <Panel>
         <View style={styles.header}>
           <Avatar name={post.author.name} size={36} />
