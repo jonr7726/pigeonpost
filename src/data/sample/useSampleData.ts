@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import * as sample from './sample';
-import type { Comment, Letter, Post } from './types-shared';
+import type { Comment, EventScope, Letter, PigeonEvent, Post, UserRef } from './types-shared';
 
 // The assumed-reactive store screens read so they behave like the real thing;
 // a later session swaps this module's hooks for API calls screens never notice
@@ -25,7 +25,15 @@ export function useFeed() {
       ),
     [],
   );
-  return { posts, stories, like };
+  const add = useMemo(
+    () => (text: string) =>
+      setPosts((current) => [
+        { id: `p-${Date.now()}`, author: sample.me, createdAt: Date.now(), kind: 'text', text, likes: 0, liked: false, commentCount: 0 },
+        ...current,
+      ]),
+    [],
+  );
+  return { posts, stories, like, add };
 }
 
 export function useProfile(username: string) {
@@ -68,3 +76,23 @@ const sampleState = {
   friends: sample.friends,
   friendRequests: sample.friendRequests,
 };
+
+export function useEvents() {
+  const [events, setEvents] = useState<PigeonEvent[]>(sample.events);
+  const like = useMemo(
+    () => (eventId: string) =>
+      setEvents((current) =>
+        current.map((e) => (e.id === eventId ? { ...e, liked: !e.liked, going: e.going + (e.liked ? -1 : 1) } : e)),
+      ),
+    [],
+  );
+  const add = useMemo(
+    () => (draft: { title: string; text: string; when: string; where?: string; scope: EventScope; invited: UserRef[] }) =>
+      setEvents((current) => [
+        { id: `e-${Date.now()}`, author: sample.me, createdAt: Date.now(), going: 0, liked: false, ...draft },
+        ...current,
+      ]),
+    [],
+  );
+  return { events, like, add };
+}

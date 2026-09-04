@@ -1,61 +1,109 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { AppText } from './AppText';
 import { Avatar } from './Avatar';
-import { navTabs, type TabId } from './NavBar';
+import { Icon, type IconName } from './Icon';
+import { UserMenu } from './UserMenu';
 import { useTheme } from '../theme/useTheme';
 
-// Desktop navigation (PM header-band port): walnut band + brass hairline,
-// wordmark, the same four content tabs as the mobile bar, then bell + the
-// user image (profile lives behind it). Global chrome only.
+// Desktop TopNav, old-Facebook-shaped: app icon far left, one search box
+// (friends/posts/comments/letters), then the icon row — home (→ your
+// profile), feed, letters, friends, notifications, settings — and the user
+// dropdown. Global chrome only.
+export type TopNavTab = 'home' | 'feed' | 'letters' | 'friends' | 'settings';
+
 export function TopNav({
   active,
   onSelect,
   username,
   bellActive,
 }: {
-  active: TabId;
-  onSelect: (tab: TabId) => void;
+  active: string;
+  onSelect: (tab: string) => void;
   username: string;
   bellActive?: boolean;
 }) {
   const { palette } = useTheme();
+  const [query, setQuery] = useState('');
+
+  const items: { id: TopNavTab; icon: IconName; label: string; glyph: string }[] = [
+    { id: 'home', icon: 'home', label: 'Home', glyph: '⌂' },
+    { id: 'feed', icon: 'pigeon', label: 'Feed', glyph: '🕊' },
+    { id: 'letters', icon: 'letters', label: 'Letters', glyph: '✉' },
+    { id: 'friends', icon: 'compass', label: 'Friends', glyph: '✧' },
+  ];
+
   return (
-    <View style={[styles.band, { borderBottomColor: palette.panelEdge }]}>
-      <Pressable onPress={() => onSelect('feed')} accessibilityRole="button" style={styles.word}>
-        <AppText tone="display" size="md">
-          🕊️ pigeonpost
-        </AppText>
-      </Pressable>
-      <View style={styles.nav}>
-        {navTabs.map(({ id, label }) => (
+    <View testID="topnav">
+      <View style={[styles.band, { borderBottomColor: palette.panelEdge, backgroundColor: palette.band }]}>
+        <Pressable onPress={() => onSelect('feed')} accessibilityRole="button" accessibilityLabel="pigeonpost home" style={styles.mark}>
+          <AppText style={styles.markGlyph}>🕊️</AppText>
+        </Pressable>
+
+        <View style={[styles.search, { borderColor: palette.panelEdge, backgroundColor: palette.panel }]}>
+          <AppText size="sm" tone="dim" style={styles.searchIcon}>⌕</AppText>
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search friends, posts, comments, letters"
+            placeholderTextColor={palette.textDim}
+            style={[styles.searchInput, { color: palette.text }]}
+            accessibilityLabel="search pigeonpost"
+          />
+        </View>
+
+        <View style={styles.right}>
+          {items.map(({ id, label, glyph }) => {
+            const isOn = active === id;
+            return (
+              <Pressable
+                key={id}
+                onPress={() => onSelect(id)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isOn }}
+                accessibilityLabel={label}
+                style={() => [styles.navItem, isOn && { borderBottomColor: palette.accent, borderBottomWidth: 3 }, ]}
+              >
+                <AppText style={[styles.navGlyph, { color: isOn ? palette.accent : palette.textDim }]}>{glyph}</AppText>
+              </Pressable>
+            );
+          })}
           <Pressable
-            key={id}
-            onPress={() => onSelect(id)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active === id }}
-            style={[styles.link, active === id && { borderBottomColor: palette.accent, borderBottomWidth: 2 }]}
+            onPress={() => onSelect('feed')}
+            accessibilityRole="button"
+            accessibilityLabel="notifications"
+            style={() => [styles.navItem, ]}
           >
-            <AppText size="sm" tone={active === id ? 'accent' : 'dim'} style={styles.linkText}>
-              {label}
-            </AppText>
+            <AppText style={styles.navGlyph}>🔔</AppText>
+            {bellActive && <View style={[styles.badge, { backgroundColor: palette.error }]} />}
           </Pressable>
-        ))}
-      </View>
-      <View style={styles.side}>
-        <Pressable onPress={() => onSelect('feed')} accessibilityRole="button" accessibilityLabel="notifications">
-          <AppText style={styles.bell}>🔔{bellActive ? '·' : ''}</AppText>
-        </Pressable>
-        <Pressable
-          onPress={() => onSelect('profile')}
-          accessibilityRole="button"
-          accessibilityLabel={`your profile, ${username}`}
-          accessibilityState={{ selected: active === 'profile' }}
-          style={styles.me}
-        >
-          <Avatar name={username} size={26} accessibilityLabel={`profile of ${username}`} />
-          <AppText tone="dim" size="sm">@{username}</AppText>
-        </Pressable>
+          <Pressable
+            onPress={() => onSelect('settings')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: active === 'settings' }}
+            accessibilityLabel="settings"
+            style={() => [styles.navItem, active === 'settings' && { borderBottomColor: palette.accent, borderBottomWidth: 3 }, ]}
+          >
+            <AppText style={styles.navGlyph}>⚙</AppText>
+          </Pressable>
+          <UserMenu
+            username={username}
+            onGoProfile={() => onSelect('home')}
+            trigger={(openMenu, openNow) => (
+              <Pressable
+                onPress={openMenu}
+                accessibilityRole="button"
+                accessibilityLabel={`account menu for ${username}`}
+                accessibilityState={{ expanded: openNow }}
+                style={() => [styles.me, ]}
+              >
+                <Avatar name={username} size={28} />
+                <AppText size="sm" style={{ color: palette.text }}>{username}</AppText>
+              </Pressable>
+            )}
+          />
+        </View>
       </View>
     </View>
   );
@@ -63,14 +111,20 @@ export function TopNav({
 
 const styles = StyleSheet.create({
   band: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 16,
-    paddingHorizontal: 20, borderBottomWidth: 1, backgroundColor: 'transparent',
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: 1,
   },
-  nav: { flexDirection: 'row', gap: 18 },
-  link: { paddingVertical: 14, borderBottomWidth: 0 },
-  linkText: { fontFamily: 'Menlo, Consolas, monospace', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase' },
-  word: { paddingVertical: 10 },
-  side: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingRight: 14 },
-  bell: { fontSize: 17 },
-  me: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  mark: { padding: 4 },
+  markGlyph: { fontSize: 22 },
+  search: {
+    flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, maxWidth: 420,
+    borderRadius: 20, borderWidth: 1, paddingHorizontal: 12, height: 34,
+  },
+  searchIcon: { fontSize: 14 },
+  searchInput: { flex: 1, fontSize: 13, paddingVertical: 0 },
+  right: { flexDirection: 'row', alignItems: 'center', gap: 2, marginLeft: 'auto' },
+  navItem: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6, borderBottomWidth: 0 },
+  navGlyph: { fontSize: 16 },
+  badge: { width: 8, height: 8, borderRadius: 4, position: 'absolute' as const, top: 8, right: 8 },
+  me: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 18 },
 });

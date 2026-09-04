@@ -1,5 +1,5 @@
 import type { ProfilePageBlob } from '../../ui/profile/blobs';
-import type { Comment, Friend, FriendRequest, Letter, Post, Story, WallPost } from './types-shared';
+import type { Comment, Friend, FriendRequest, Letter, PigeonEvent, Post, Story, WallPost } from './types-shared';
 
 // Deterministic seed. Times are offsets from a fixed epoch so stories stay
 // "fresh" and letters stay pending whenever the app opens (storyboard data).
@@ -130,3 +130,18 @@ export const myProfile = {
   layout: instagramLayout,
   stats: { inFlight: 3, delivered: 12, received: 21 } as const,
 };
+
+export const events: PigeonEvent[] = [
+  {
+    id: 'e-1', author: me, createdAt: hours(4), title: 'banding-day tea',
+    text: 'ring this year’s fledglings, then jam and toast in the warm loft.',
+    when: 'Sat 14th, mid-afternoon', where: 'the east loft', scope: 'friends',
+    invited: [], going: 3, liked: false,
+  },
+  {
+    id: 'e-2', author: users.marta, createdAt: hours(30), title: 'letter-weaving afternoon',
+    text: 'bring one letter you read once and never forgot — we weave around the words.',
+    when: 'Sun 15th, 2pm', where: 'Nia’s veranda', scope: 'invited',
+    invited: [users.hubert, users.nia, me], going: 2, liked: true,
+  },
+];

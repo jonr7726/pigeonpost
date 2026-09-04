@@ -71,3 +71,19 @@ export type FriendRequest = {
 };
 
 export type Friend = UserRef & { pin: { x: number; y: number }; mapLabel: string };
+
+export type EventScope = 'friends' | 'invited';
+
+export type PigeonEvent = {
+  id: string;
+  author: UserRef;
+  createdAt: number;
+  title: string;
+  text: string;
+  when: string;
+  where?: string;
+  scope: EventScope;
+  invited: UserRef[];
+  going: number;
+  liked: boolean;
+};
