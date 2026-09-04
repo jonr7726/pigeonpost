@@ -87,3 +87,15 @@ export type PigeonEvent = {
   going: number;
   liked: boolean;
 };
+
+export type Group = {
+  id: string;
+  name: string;
+  description: string;
+  members: UserRef[];
+  posts: Post[];
+  // pending requests to join (invite-only: members invite, but join requests
+  // can also arrive and are approved in the group's settings tab)
+  requests: UserRef[];
+  liked: Record<string, boolean>;
+};

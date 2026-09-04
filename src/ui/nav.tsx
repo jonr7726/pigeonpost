@@ -8,7 +8,8 @@ export type ScreenParams =
   | { screen: 'postDetail'; postId: string }
   | { screen: 'letterRead'; letterId: string }
   | { screen: 'letterCompose' }
-  | { screen: 'username'; username: string };
+  | { screen: 'username'; username: string }
+  | { screen: 'group'; groupId: string };
 
 type StackEntry = ScreenParams;
 

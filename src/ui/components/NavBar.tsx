@@ -7,9 +7,11 @@ import { Composer } from './Composer';
 import { CreateEventModal } from './CreateEventModal';
 import { Modal } from './Modal';
 import { UserMenu } from './UserMenu';
+import { GroupSection, ShortcutsSection } from './SideRail';
+import { useRouter } from '../nav';
 import { useTheme } from '../theme/useTheme';
 
-export type TabId = 'letters' | 'feed' | 'discover' | 'profile' | 'settings';
+export type TabId = 'letters' | 'feed' | 'discover' | 'profile' | 'settings' | 'events';
 
 // Mobile bottom bar: home (→ your profile), feed, letters, friends — then a
 // create dropdown (new post / new event), notifications, and the avatar
@@ -33,6 +35,8 @@ export function NavBar({
 }) {
   const { palette } = useTheme();
   const [createOpen, setCreateOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const router = useRouter();
   const [postOpen, setPostOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
 
@@ -60,6 +64,15 @@ export function NavBar({
               </Pressable>
             );
           })}
+          <Pressable
+            onPress={() => setMoreOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel="more — events, groups, shortcuts"
+            testID="more-open"
+            style={styles.tab}
+          >
+            <AppText size="lg" style={{ color: palette.text }}>≡</AppText>
+          </Pressable>
           <Pressable
             onPress={() => setCreateOpen((v) => !v)}
             accessibilityRole="button"
@@ -95,6 +108,13 @@ export function NavBar({
             />
           </View>
         </View>
+        <Modal visible={moreOpen} onClose={() => setMoreOpen(false)} title="more">
+          <Pressable onPress={() => { setMoreOpen(false); router.goTab('events'); }} accessibilityRole="button" accessibilityLabel="events" style={styles.moreRow}>
+            <AppText size="md">📅 events</AppText>
+          </Pressable>
+          <GroupSection onOpen={(id) => { setMoreOpen(false); router.push({ screen: 'group', groupId: id }); }} />
+          <ShortcutsSection />
+        </Modal>
         {createOpen && (
           <View style={[styles.createMenu, { backgroundColor: palette.panel, borderColor: palette.panelEdge }]} testID="create-menu">
             <Pressable
@@ -140,5 +160,6 @@ const styles = StyleSheet.create({
   create: { flex: 'auto' as never, paddingTop: 4 },
   createMenu: { position: 'absolute' as never, bottom: 56, left: '50%' as never, width: 200, marginLeft: -100 as never, borderWidth: 1, borderRadius: 10, paddingVertical: 6, zIndex: 60 },
   createRow: { paddingVertical: 10, paddingHorizontal: 14 },
+  moreRow: { paddingVertical: 10, paddingHorizontal: 14 },
   me: { paddingRight: 14, paddingLeft: 4 },
 });
