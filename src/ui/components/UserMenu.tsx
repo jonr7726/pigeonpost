@@ -14,10 +14,12 @@ export function UserMenu({
   username,
   onGoProfile,
   trigger,
+  direction = 'down',
 }: {
   username: string;
   onGoProfile?: () => void;
   trigger: (open: () => void, openNow: boolean) => ReactNode;
+  direction?: 'down' | 'up';
 }) {
   const [open, setOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
@@ -30,7 +32,7 @@ export function UserMenu({
     <View style={styles.wrap}>
       {trigger(() => setOpen((v) => !v), open)}
       {open && (
-        <View style={[styles.menu, { backgroundColor: palette.panel, borderColor: palette.panelEdge }]} testID="user-menu">
+        <View style={[direction === 'up' ? styles.menuUp : styles.menu, { backgroundColor: palette.panel, borderColor: palette.panelEdge }]} testID="user-menu">
           <Pressable
             onPress={() => {
               setOpen(false);
@@ -75,13 +77,7 @@ export function UserMenu({
           />
         </View>
       )}
-      {open && <View style={styles.catcher}><Pressable
-        accessibilityRole="button"
-        accessibilityLabel="close menu"
-        onPress={() => setOpen(false)}
-        style={styles.catcherHit}
-      /></View>}
-    </View>
+          </View>
   );
 }
 
@@ -106,6 +102,5 @@ const styles = StyleSheet.create({
   col: { gap: 0 },
   item: { borderRadius: 6 },
   glyphBox: { width: 28, alignItems: 'center' },
-  catcher: { position: 'absolute' as const, top: 40, left: -200, right: -200, height: 1000, zIndex: -1 as never, width: 800 },
-  catcherHit: { width: '100%', height: '100%' },
+  menuUp: { position: 'absolute' as const, bottom: 56, right: 0, width: 260, borderWidth: 1, borderRadius: 10, paddingVertical: 6, zIndex: 70 },
 });

@@ -87,11 +87,11 @@ export function useEvents() {
     [],
   );
   const add = useMemo(
-    () => (draft: { title: string; text: string; when: string; where?: string; scope: EventScope; invited: UserRef[] }) =>
-      setEvents((current) => [
-        { id: `e-${Date.now()}`, author: sample.me, createdAt: Date.now(), going: 0, liked: false, ...draft },
-        ...current,
-      ]),
+    () => (draft: { title: string; text: string; when: string; where?: string; scope: EventScope; invited: UserRef[]; plate?: string }) => {
+      const id = `e-${Date.now()}`;
+      setEvents((current) => [{ id, author: sample.me, createdAt: Date.now(), going: 0, liked: false, ...draft }, ...current]);
+      return id;
+    },
     [],
   );
   return { events, like, add };

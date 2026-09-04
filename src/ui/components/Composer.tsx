@@ -1,119 +1,120 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
+import { AppInput } from './AppInput';
 import { AppText } from './AppText';
 import { Avatar } from './Avatar';
+import { InviteFriendsPicker } from './PeopleList';
+import { Modal } from './Modal';
 import { Panel } from './Panel';
-import { useSession } from '../session';
+import { markDraft } from './draftGuard';
 import { useTheme } from '../theme/useTheme';
+import { useSession } from '../session';
 
-// The create-post box at the top of the feed (old-Facebook shape): a prompt
-// that opens to a text box with photo/video and tag-friends affordances.
-// Storyboard attach: "photo" chips a surface. Tag friends drops a chip list.
-export function Composer({ onPost }: { onPost?: (text: string, tagged: number) => void }) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState('');
-  const [hasPhoto, setHasPhoto] = useState(false);
-  const [hasVideo, setHasVideo] = useState(false);
-  const [tagged, setTagged] = useState<string[]>([]);
-  const [tagPicker, setTagPicker] = useState(false);
+// The one post box, identical on the main feed and in groups: an always-open
+// four-line text input, photo/video + tag-friends affordances, post button.
+export function Composer({
+  prompt,
+  onPost,
+}: {
+  prompt?: string;
+  onPost?: (text: string, tagged: string[], attached: string[]) => void;
+}) {
   const { palette } = useTheme();
   const { username } = useSession();
+  const [draft, setDraft] = useState('');
+  const [attached, setAttached] = useState<string[]>([]);
+  const [tagPickerOpen, setTagPickerOpen] = useState(false);
+  const [picked, setPicked] = useState<string[]>([]);
 
-  const friends = [
-    { id: 'f-1', username: 'marta', name: 'Marta' },
-    { id: 'f-2', username: 'hubert', name: 'Hubert' },
-    { id: 'f-3', username: 'nia', name: 'Nia' },
-    { id: 'f-4', username: 'otto', name: 'Otto' },
-  ];
-  const toggleTagFriend = (id: string) =>
-    setTagged((t) => (t.includes(id) ? t.filter((x) => x !== id) : [...t, id]));
+  const dirty = draft.length > 0 || attached.length > 0 || picked.length > 0;
+  const dirtyRef = useRef(dirty);
+  dirtyRef.current = dirty;
+  useEffect(() => {
+    markDraft(dirty);
+  }, [dirty]);
 
-  function submit() {
-    if (!draft.trim() && !hasPhoto) return;
-    onPost?.(draft.trim(), tagged.length);
+  function clean() {
     setDraft('');
-    setHasPhoto(false);
-    setTagged([]);
-    setOpen(false);
+    setAttached([]);
+    setPicked([]);
   }
 
   return (
     <Panel style={styles.card} testID="composer">
-      <View style={styles.promptRow}>
-        <Avatar name={username ?? 'wren'} size={32} />
-        {open ? (
-          <View style={styles.openBody}>
-            <TextInput
-              value={draft}
-              onChangeText={setDraft}
-              placeholder="what's on your wing, wren?"
-              placeholderTextColor={palette.textDim}
-              multiline
-              style={[styles.postInput, { color: palette.text, borderColor: palette.panelEdge }]}
-              accessibilityLabel="write a post"
-              autoFocus
-            />
-            {(hasPhoto || tagged.length > 0) && (
-              <AppText size="sm" tone="dim" style={styles.attachLine}>
-                {hasPhoto && '📷 1 photo attached  '}{hasVideo && '🎬 video attached  '}
-                {tagged.length > 0 && `with ${tagged.length} tagged`}
-              </AppText>
-            )}
-            <View style={styles.actions}>
-              <Pressable onPress={() => setHasPhoto((v) => !v)} accessibilityRole="button" accessibilityLabel="attach photo or video" style={styles.action}>
-                <AppText size="sm" style={{ color: palette.accent }}>{hasPhoto ? '📷 ✓' : '📷 / 🎬'} photo or video</AppText>
-              </Pressable>
-              <Pressable onPress={() => setTagPicker((v) => !v)} accessibilityRole="button" accessibilityLabel="tag friends" style={styles.action}>
-                <AppText size="sm" style={{ color: palette.accent }}>@tag friends</AppText>
-              </Pressable>
-              <Pressable onPress={submit} accessibilityRole="button" testID="composer-post" style={[styles.action, styles.post, { backgroundColor: palette.accent }]}>
-                <AppText size="sm" style={{ color: palette.bg }}>{open ? '' : ''}post</AppText>
-              </Pressable>
-            </View>
-            {tagPicker && (
-              <View style={[styles.tagPicker, { borderColor: palette.panelEdge }]}>
-                {friends.map((f) => (
-                  <Pressable key={f.id} onPress={() => toggleTagFriend(f.id)} accessibilityRole="button" style={() => [styles.tagRow, ]}>
-                    <Avatar name={f.name} size={20} />
-                    <AppText size="sm">{f.name}</AppText>
-                    <AppText size="sm" tone="dim" style={styles.tagCheck}>{tagged.includes(f.id) ? '✓' : ''}</AppText>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </View>
-        ) : (
-          <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel="create post" style={styles.prompt} testID="composer-open">
-            <AppText tone="dim">what's on your wing?</AppText>
-          </Pressable>
-        )}
+      <View style={styles.row}>
+        <Avatar name={username ?? 'wren'} size={36} />
+        <AppInput
+          value={draft}
+          onChangeText={setDraft}
+          multiline
+          placeholder={prompt ?? "what's on your wing?"}
+          style={styles.input}
+          testID="composer-input"
+        />
       </View>
-      {!open && (
-        <View style={styles.actions}>
-          <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel="attach photo or video" style={styles.action}>
-            <AppText size="sm" style={{ color: palette.accent }}>📷 / 🎬 photo or video</AppText>
-          </Pressable>
-          <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel="tag friends" style={styles.action}>
-            <AppText size="sm" style={{ color: palette.accent }}>@tag friends</AppText>
-          </Pressable>
-        </View>
+      {(attached.length > 0 || picked.length > 0) && (
+        <AppText size="sm" tone="dim" style={styles.attachLine}>
+          {attached.length > 0 && 'photo attached · '}{picked.length > 0 && `with ${picked.map((n) => `@${n}`).join(', ')}`}
+        </AppText>
       )}
+      <View style={styles.actions}>
+        <Pressable
+          onPress={() => setAttached((a) => (a.length ? [] : ['photo']))}
+          accessibilityRole="button"
+          accessibilityLabel="attach photo or video"
+          style={styles.action}
+          testID="composer-attach"
+        >
+          <AppText size="sm" style={{ color: palette.accent }}>
+            {attached.length ? '📷 attached' : '📷/🎬 photo or video'}
+          </AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => setTagPickerOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="tag friends"
+          style={styles.action}
+        >
+          <AppText size="sm" style={{ color: palette.accent }}>@tag friends</AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            if (!draft.trim() && attached.length === 0) return;
+            onPost?.(draft.trim(), picked, attached);
+            clean();
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="post"
+          style={[styles.postBtn, { backgroundColor: palette.accent }]}
+          testID="composer-post"
+        >
+          <AppText size="sm" style={{ color: palette.bg }}>post</AppText>
+        </Pressable>
+      </View>
+      <Modal visible={tagPickerOpen} onClose={() => setTagPickerOpen(false)} title="tag friends">
+        <InviteFriendsPicker title="tag friends" staging picked={picked} onPickedChange={setPicked} />
+        <Pressable
+          onPress={() => setTagPickerOpen(false)}
+          accessibilityRole="button"
+          accessibilityLabel="done"
+          style={[styles.postBtn, { backgroundColor: palette.accent }]}
+        >
+          <AppText size="sm" style={{ color: palette.bg }}>done</AppText>
+        </Pressable>
+      </Modal>
     </Panel>
   );
 }
 
+const dirtyRef = { current: false };
+
 const styles = StyleSheet.create({
-  card: { padding: 8 },
-  promptRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
-  prompt: { flex: 1, paddingVertical: 8 },
-  openBody: { flex: 1, gap: 8 },
-  postInput: { borderWidth: 0, borderBottomWidth: 1, padding: 8, fontSize: 14, minHeight: 44, textAlignVertical: 'top' },
-  attachLine: { paddingHorizontal: 8 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  card: { gap: 8 },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  input: { flex: 1, minHeight: 96 },
   action: { paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8 },
-  post: { marginLeft: 'auto' },
-  tagPicker: { borderWidth: 1, borderRadius: 8, padding: 4 },
-  tagRow: { padding: 4, borderRadius: 6 },
-  tagCheck: { marginLeft: 'auto', width: 40, textAlign: 'right' as never },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  postBtn: { alignSelf: 'flex-end' as never, marginLeft: 'auto', paddingVertical: 6, paddingHorizontal: 14, borderRadius: 8 },
+  attachLine: { paddingHorizontal: 4 },
 });

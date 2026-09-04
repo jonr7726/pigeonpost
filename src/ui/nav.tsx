@@ -9,6 +9,8 @@ export type ScreenParams =
   | { screen: 'letterRead'; letterId: string }
   | { screen: 'letterCompose' }
   | { screen: 'username'; username: string }
+  | { screen: 'event'; eventId: string }
+  | { screen: 'eventCreate' }
   | { screen: 'group'; groupId: string };
 
 type StackEntry = ScreenParams;

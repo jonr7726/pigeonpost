@@ -12,16 +12,33 @@ import { GroupScreen } from '../screens/GroupScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LettersScreen } from '../screens/LettersScreen';
 import { FriendsScreen } from '../screens/FriendsScreen';
+import { EventScreen } from '../screens/EventScreen';
+import { CreateEventScreen } from '../screens/CreateEventScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { PostDetailScreen } from '../screens/PostDetailScreen';
 import { LetterReadScreen } from '../screens/LetterReadScreen';
 import { LetterComposeScreen } from '../screens/LetterComposeScreen';
 import { useSession } from './session';
+import { clearDraft, ConfirmModal } from './components';
+import { draftGuard } from './components/draftGuard';
+import { useRef, useState, useCallback } from 'react';
 
 // The bottom tab NavBar (mobile/tablet) vs the old-Facebook desktop chrome:
 // word TopNav + a left SideRail (groups, shortcuts) that only exists on
 // desktop. Detail pushes still swap `body`.
 export function AppShell() {
+  // Navigation discard guard: a composer with a half-typed draft raises the
+  // shared confirmation before the screen changes.
+  const [pendingNav, setPendingNav] = useState<null | { run: () => void }>(null);
+  function guardedNav(run: () => void) {
+    if (draftGuard.dirty) {
+      setPendingNav({ run });
+      return;
+    }
+    run();
+  }
+  void clearDraft;
+
   const { palette, mode: themeMode } = useTheme();
   const router = useRouter();
   const session = useSession();
@@ -37,6 +54,8 @@ export function AppShell() {
     <SettingsScreen />;
   const body =
     top?.screen === 'group' ? <GroupScreen groupId={top.groupId} /> :
+    top?.screen === 'event' ? <EventScreen eventId={top.eventId} /> :
+    top?.screen === 'eventCreate' ? <CreateEventScreen /> :
     top?.screen === 'postDetail' ? <PostDetailScreen postId={top.postId} /> :
     top?.screen === 'letterRead' ? <LetterReadScreen letterId={top.letterId} /> :
     top?.screen === 'letterCompose' ? <LetterComposeScreen /> :
@@ -48,6 +67,21 @@ export function AppShell() {
     router.tab === 'profile' ? 'home' :
     router.tab === 'discover' ? 'friends' : String(router.tab);
 
+  const discardModal = (
+    <ConfirmModal
+      open={pendingNav != null}
+      title="Discard your draft?"
+      message="Changing screens now discards the half-written post or event."
+      danger
+      confirmLabel="discard"      onCancel={() => setPendingNav(null)}
+      onConfirm={() => {
+        clearDraft();
+        pendingNav?.run();
+        setPendingNav(null);
+      }}
+    />
+  );
+
   if (desktop) {
     return (
       <View style={[styles.fill, { backgroundColor: palette.bg }]}>
@@ -55,14 +89,15 @@ export function AppShell() {
         <BrassRail />
         <TopNav
           active={topnavActive}
-          onSelect={(id) => {
-            router.goTab((id === 'home' ? 'profile' : id === 'friends' ? 'discover' : id) as TabId);
-          }}
+          onSelect={(id) =>
+            guardedNav(() => router.goTab((id === 'home' ? 'profile' : id === 'friends' ? 'discover' : id) as TabId))
+          }
           username={railName}
         />
+        {discardModal}
         <View style={styles.desktopCols}>
           <SideRail
-            onGoProfile={() => router.goTab('profile')}
+            onGoProfile={() => guardedNav(() => router.goTab('profile'))}
             username={railName}
           />
           <View style={styles.railContent}>
@@ -78,10 +113,11 @@ export function AppShell() {
       <GlobalStyle mode={themeMode} bg={palette.bg} bgGlow={palette.bgGlow} />
       <BrassRail />
       <View style={[styles.mainMobile, { backgroundColor: palette.bg }]}>
+        {discardModal}
         <View style={styles.mobileScrollArea}>{body}</View>
         <NavBar
           active={top?.screen === 'group' ? 'feed' : router.tab}
-          onSelect={router.goTab}
+          onSelect={(tab) => guardedNav(() => router.goTab(tab))}
           username={railName}
         />
       </View>
