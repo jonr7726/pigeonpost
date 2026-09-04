@@ -6,7 +6,7 @@ Three tiers. The crypto tier is the one that makes this product trustworthy, and
 ## 1. Crypto core — adversarial unit tests (the important tier)
 Fast `vitest` tests over the crypto module, asserting the **negative** properties
 directly on keys/ciphertext. A happy path that renders your own feed proves nothing;
-these prove the security. From [`../plans/CRYPTO-SPEC.md`](../plans/CRYPTO-SPEC.md) §8:
+these prove the security. From [`reference/CRYPTO-SPEC.md`](CRYPTO-SPEC.md) §8:
 
 1. **Removed friend can't read the future** — after removal, blobs at a later epoch
    fail to open with the keys the removed member held.

@@ -1,12 +1,13 @@
-# CRYPTO-SPEC — the Phase 0 blueprint
+# CRYPTO-SPEC — the crypto blueprint
 
-**Status: Active** — foundation for R-001–R-008.
+**Status: Active** — reference of record for all crypto decisions (R-001–R-008 and
+beyond). Lives in `docs/reference/` (it never "freezes" like a plan); changes land
+with the code they describe.
 
-The exact key hierarchy and operations, at the level an implementer needs. Written
-before code deliberately: the crypto core is small and unforgiving, so it gets a spec
-first. Properties are what matter — we compose vetted libraries, never hand-roll
+The exact key hierarchy and operations, at the level an implementer needs. Properties
+are what matter — we compose vetted libraries, never hand-roll
 primitives (`age-encryption`, `libsodium-wrappers`). Rules the code must honour are in
-[`../reference/TESTING.md`](../reference/TESTING.md).
+[`TESTING.md`](TESTING.md).
 
 ## 0. Primitives we lean on (and their promise)
 - **Symmetric AEAD** (libsodium `crypto_secretbox` / XChaCha20-Poly1305): one key
@@ -177,7 +178,7 @@ A group is a shared single-channel feed — the circle machinery pointed at a
   enforcement authority.
 
 ## 8. The properties the implementation MUST satisfy
-These are the [negative tests](../reference/TESTING.md). If any can fail, the design
+These are the [negative tests](TESTING.md). If any can fail, the design
 is broken:
 1. A removed friend cannot open payloads with `epoch > removalEpoch` (circle or
    close) — and `K_{n+1}` does **not** decrypt anything sealed under `K_n`

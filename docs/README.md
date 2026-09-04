@@ -11,7 +11,7 @@ Docs fall into three lifecycles: **Living** (kept current forever), **Reference*
 1. [`../CLAUDE.md`](../CLAUDE.md) — the project's procedure (cross-repo: session lifecycle, worktrees, doc rules).
 2. [`reference/DEV-ENVIRONMENT.md`](reference/DEV-ENVIRONMENT.md) — run the client, the client-side gate.
 3. [`DESIGN.md`](DESIGN.md) — how it works today (the living design).
-4. [`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md) — the crypto blueprint (Phase 0).
+4. [`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md) — the crypto blueprint (reference of record).
 5. [`ROADMAP.md`](ROADMAP.md) — what's next.
 
 ## Living — kept current
@@ -27,12 +27,12 @@ Docs fall into three lifecycles: **Living** (kept current forever), **Reference*
 |-----|---------|
 | [`reference/DEV-ENVIRONMENT.md`](reference/DEV-ENVIRONMENT.md) | Running/building the client locally, the client-side gate. |
 | [`reference/TESTING.md`](reference/TESTING.md) | Test tiers; where each tier lives (crypto/unit here, e2e in the server repo). |
+| [`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md) | **The crypto blueprint** — key hierarchy, audiences/epoch chains, groups, the sealed-payload data model; the reference of record for all crypto decisions (C22–C24 land in DECISIONS). |
 
 ## Plans — one slice each, frozen when shipped
 Each carries a `Status:` line. Active plans are linked from `ROADMAP.md` by `R-NNN`.
 | Plan | Status |
 |------|--------|
-| [`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md) | **Active** (foundation for R-001–R-008) |
 | [`plans/UI-DESIGN.md`](plans/UI-DESIGN.md) | **Shipped** — the FE/UI design-of-record session that became `DESIGN.md` §UI design (C18–C21); content lives there now |
 
 ## Other

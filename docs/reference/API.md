@@ -8,7 +8,7 @@ beyond what a client needs to interoperate.
 Everything is JSON over HTTPS unless noted. All content payloads the app shares
 (`post`, `story`, `comment`, `profile`, `event`) are **typed encrypted blobs** —
 the client encrypts with the circle key; the server stores opaque ciphertext
-(see [`../plans/CRYPTO-SPEC.md`](../plans/CRYPTO-SPEC.md)).
+(see [`reference/CRYPTO-SPEC.md`](CRYPTO-SPEC.md)).
 
 ## Accounts (skeleton — first-exercise; superseded by R-001's real contract)
 - `POST /api/users/signup` `{username}` → `201 {id, username}`; error codes:
