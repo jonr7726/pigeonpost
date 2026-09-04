@@ -1,5 +1,6 @@
 import { StyleSheet, View, type ViewProps } from 'react-native';
 
+import { useLayoutMode } from '../theme/breakpoints';
 import { useTheme } from '../theme/useTheme';
 
 export type ScreenWidth = 'standard' | 'full';
@@ -17,17 +18,22 @@ export function Screen({
   ...rest
 }: ViewProps & { width?: ScreenWidth; bg?: 'bg' | 'paper' }) {
   const { palette } = useTheme();
+  const desktop = useLayoutMode() === 'desktop';
+  // The 2/3 measure is a desktop rule only: thin screens use the full width.
+  // Percentage maxWidth shrink-wraps here (parent has no resolved width), so
+  // the desktop measure is a fixed pixel column instead.
+  const maxWidth = !desktop ? '100%' : columns[width];
   return (
     <View
       style={[styles.fill, { backgroundColor: bg === 'paper' ? palette.paper : palette.bg }, style]}
       {...rest}
     >
-      <View style={[styles.column, { maxWidth: columns[width] }]}>{children}</View>
+      <View style={[styles.column, { maxWidth }]}>{children}</View>
     </View>
   );
 }
 
-const columns = { standard: '66.6%', full: 1240 } as const;
+const columns = { standard: 980, full: 1240 } as const;
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },

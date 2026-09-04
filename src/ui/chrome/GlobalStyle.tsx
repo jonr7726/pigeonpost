@@ -34,7 +34,10 @@ export function GlobalStyle({ mode, bg, bgGlow }: { mode: 'dark' | 'light'; bg: 
       el.id = 'pigeonpost-style';
       document.head.appendChild(el);
     }
-    el.textContent = `html { scrollbar-width: none; }\nhtml::-webkit-scrollbar { display: none; }\n${SCROLL_CSS}\n${KEYFRAMES}\nbody { ${vignette} }\nbody, #root { min-height: 100%; }`;
+    // #root is the flex anchor: it must be a definite height (not min-height)
+    // so the shell's flex:1 content panes can bound and scroll internally.
+    // Column scrollbars are per-pane, so the document scrollbar stays hidden.
+    el.textContent = `html { scrollbar-width: none; }\nhtml::-webkit-scrollbar { display: none; }\n${SCROLL_CSS}\n${KEYFRAMES}\nbody { ${vignette} }\nhtml, body, #root { height: 100%; }`;
   }, [mode, bg, bgGlow]);
   return null;
 }

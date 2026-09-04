@@ -71,3 +71,31 @@ export type FriendRequest = {
 };
 
 export type Friend = UserRef & { pin: { x: number; y: number }; mapLabel: string };
+
+export type EventScope = 'friends' | 'invited';
+
+export type PigeonEvent = {
+  id: string;
+  author: UserRef;
+  createdAt: number;
+  title: string;
+  text: string;
+  when: string;
+  where?: string;
+  scope: EventScope;
+  invited: UserRef[];
+  going: number;
+  liked: boolean;
+};
+
+export type Group = {
+  id: string;
+  name: string;
+  description: string;
+  members: UserRef[];
+  posts: Post[];
+  // pending requests to join (invite-only: members invite, but join requests
+  // can also arrive and are approved in the group's settings tab)
+  requests: UserRef[];
+  liked: Record<string, boolean>;
+};
