@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppInput, AppText, Avatar, Composer, ConfirmModal, InviteFriendsPicker, Panel, PeopleList, PostCard } from '../ui/components';
+import { AppInput, AppText, Avatar, Card, Composer, ConfirmModal, InviteFriendsPicker, PeopleList, Panel, PostCard, ScrollColumn, TwoColumns } from '../ui/components';
 import { useLayoutMode } from '../ui/theme/breakpoints';
 import { useTheme } from '../ui/theme/useTheme';
 import { useRouter } from '../ui/nav';
@@ -34,7 +34,9 @@ export function GroupScreen({ groupId }: { groupId: string }) {
 
   const feed = (
     <View style={{ gap: 12 }}>
-      <Composer onPost={(text) => post(group.id, text)} />
+      <Card title="create post">
+        <Composer onPost={(text) => post(group.id, text)} />
+      </Card>
       {group.posts.map((p) => (
         <PostCard key={p.id} post={p} onLike={() => like(group.id, p.id)} />
       ))}
@@ -55,6 +57,7 @@ export function GroupScreen({ groupId }: { groupId: string }) {
 
   if (!desktop) {
     return (
+      <ScrollColumn>
       <View style={{ gap: 10, paddingBottom: 12 }}>
         <AppText tone="display" size="lg">{group.name}</AppText>
         <View style={styles.seg}>
@@ -72,13 +75,13 @@ export function GroupScreen({ groupId }: { groupId: string }) {
         </View>
         {pane === 'feed' ? feed : settings}
       </View>
+      </ScrollColumn>
     );
   }
 
   return (
-    <View style={styles.columns}>
-      <View style={styles.main}>{feed}</View>
-      <View style={styles.side}>{settings}</View>
+    <View style={styles.pane}>
+      <TwoColumns main={feed} side={settings} />
     </View>
   );
 }
@@ -107,72 +110,70 @@ export function GroupSettings({
   const [coverApplied, setCoverApplied] = useState(false);
 
   return (
-    <Panel style={{ gap: 10 }} testID="group-settings">
-      <View style={styles.cover}>
-        <View style={[styles.plate, { backgroundColor: coverApplied ? palette.accent : palette.panel }, coverApplied && { opacity: 0.5 }]} />
-        <Pressable
-          onPress={() => setCoverPicked(true)}
-          accessibilityRole="button"
-          style={[styles.pill, { backgroundColor: palette.panel }]}
-          testID="cover-change"
-        >
-          <AppText size="sm" style={{ color: palette.accent }}>{coverApplied ? 'cover applied' : 'change cover photo'}</AppText>
+    <View style={{ gap: 12 }}>
+      <Card title="group settings">
+        <View style={styles.cover}>
+          <View style={[styles.plate, { backgroundColor: palette.band }, { borderLeftWidth: 2, borderRightWidth: 2, borderColor: palette.panelEdge }, coverApplied && { opacity: 0.6 }]} />
+          <Pressable
+            onPress={() => setCoverPicked(true)}
+            accessibilityRole="button"
+            style={[styles.pill, { backgroundColor: palette.panel }]}
+            testID="cover-change"
+          >
+            <AppText size="sm" style={{ color: palette.accent }}>{coverApplied ? 'cover applied' : 'change cover photo'}</AppText>
+          </Pressable>
+        </View>
+        <AppText size="sm" tone="dim">name</AppText>
+        <View style={styles.renameRow}>
+          <AppInput value={name} onChangeText={setName} style={{ flex: 1 }} placeholder="group name" />
+          <Pressable onPress={() => onRename(name.trim() || group.name)} accessibilityRole="button" style={styles.smallBtn}>
+            <AppText size="sm" style={{ color: palette.accent }}>rename</AppText>
+          </Pressable>
+        </View>
+        <ConfirmModal
+          open={coverPicked}
+          title="Set cover photo?"
+          message="Your new cover applies for all members. Jon: it will pretend to work correctly."
+          confirmLabel="apply"
+          onCancel={() => setCoverPicked(false)}
+          onConfirm={() => {
+            setCoverApplied(true);
+            setCoverPicked(false);
+          }}
+        />
+      </Card>
+
+      <Card title="members">
+        <PeopleList people={group.members} />
+        <AppText size="sm" tone="dim">requests to join ({group.requests.length})</AppText>
+        {group.requests.length === 0 && <AppText size="sm" tone="dim">none waiting</AppText>}
+        {group.requests.map((r) => (
+          <RequestRow key={r.id} person={r} onDecide={onDecide} />
+        ))}
+      </Card>
+
+      <Card title="invite friends">
+        <InviteFriendsPicker immediate onPick={(person) => onInvite([person])} />
+      </Card>
+
+      <Card>
+        <Pressable onPress={() => setLeaving(true)} accessibilityRole="button" style={styles.smallBtn} testID="leave-group">
+          <AppText size="sm" style={{ color: palette.error }}>leave this group</AppText>
         </Pressable>
-      </View>
-
-      <AppText tone="display" size="md">group settings</AppText>
-
-      <AppText size="sm" tone="dim">name</AppText>
-      <View style={styles.renameRow}>
-        <AppInput value={name} onChangeText={setName} style={{ flex: 1 }} placeholder="group name" />
-        <Pressable onPress={() => onRename(name.trim() || group.name)} accessibilityRole="button" style={styles.smallBtn}>
-          <AppText size="sm" style={{ color: palette.accent }}>rename</AppText>
-        </Pressable>
-      </View>
-
-      <AppText size="sm" tone="dim">members ({group.members.length})</AppText>
-      <PeopleList people={group.members} searchable={false} />
-
-      <ConfirmModal
-        open={coverPicked}
-        title="Set cover photo?"
-        message="Your new cover applies for all members. Jon: it will pretend to work correctly."
-        confirmLabel="apply"
-        onCancel={() => setCoverPicked(false)}
-        onConfirm={() => {
-          setCoverApplied(true);
-          setCoverPicked(false);
-        }}
-      />
-
-      <InviteFriendsPicker
-        title="invite friends"
-        immediate
-        onPick={(person) => onInvite([person])}
-      />
-
-      <AppText size="sm" tone="dim">requests to join ({group.requests.length})</AppText>
-      {group.requests.length === 0 && <AppText size="sm" tone="dim">none waiting</AppText>}
-      {group.requests.map((r) => (
-        <RequestRow key={r.id} person={r} onDecide={onDecide} />
-      ))}
-
-      <Pressable onPress={() => setLeaving(true)} accessibilityRole="button" style={styles.smallBtn} testID="leave-group">
-        <AppText size="sm" style={{ color: palette.error }}>leave this group</AppText>
-      </Pressable>
-
-      <ConfirmModal
-        open={leaving}
-        title="Leave this group?"
-        message={`You will stop seeing ${group.name} posts. You may not be able to rejoin without a new invitation.`}
-        danger
-        confirmLabel="leave"
-        onCancel={() => setLeaving(false)}
-        onConfirm={onLeave}
-      />
-    </Panel>
+        <ConfirmModal
+          open={leaving}
+          title="Leave this group?"
+          message={`You will stop seeing ${group.name} posts. You may not be able to rejoin without a new invitation.`}
+          danger
+          confirmLabel="leave"
+          onCancel={() => setLeaving(false)}
+          onConfirm={onLeave}
+        />
+      </Card>
+    </View>
   );
 }
+
 function RequestRow({ person, onDecide }: { person: { id: string; username: string; name: string }; onDecide: (username: string, accept: boolean) => void }) {
   const [choice, setChoice] = useState<null | 'accept' | 'decline'>(null);
   const { palette } = useTheme();
@@ -207,6 +208,7 @@ function RequestRow({ person, onDecide }: { person: { id: string; username: stri
 }
 
 const styles = StyleSheet.create({
+  pane: { flex: 1 },
   columns: { flex: 1, flexDirection: 'row', gap: 16, alignItems: 'flex-start' },
   main: { flex: 2, gap: 12 },
   side: { flex: 1, gap: 12, borderLeftWidth: 1 },

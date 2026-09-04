@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppInput } from './AppInput';
 import { AppText } from './AppText';
 import { Avatar } from './Avatar';
+import { ConfirmModal } from './ConfirmModal';
 import { InviteFriendsPicker } from './PeopleList';
 import { Modal } from './Modal';
 import { Panel } from './Panel';
@@ -26,6 +27,7 @@ export function Composer({
   const [attached, setAttached] = useState<string[]>([]);
   const [tagPickerOpen, setTagPickerOpen] = useState(false);
   const [picked, setPicked] = useState<string[]>([]);
+  const [postConfirm, setPostConfirm] = useState(false);
 
   const dirty = draft.length > 0 || attached.length > 0 || picked.length > 0;
   const dirtyRef = useRef(dirty);
@@ -79,11 +81,7 @@ export function Composer({
           <AppText size="sm" style={{ color: palette.accent }}>@tag friends</AppText>
         </Pressable>
         <Pressable
-          onPress={() => {
-            if (!draft.trim() && attached.length === 0) return;
-            onPost?.(draft.trim(), picked, attached);
-            clean();
-          }}
+          onPress={() => setPostConfirm(true)}
           accessibilityRole="button"
           accessibilityLabel="post"
           style={[styles.postBtn, { backgroundColor: palette.accent }]}
@@ -92,6 +90,22 @@ export function Composer({
           <AppText size="sm" style={{ color: palette.bg }}>post</AppText>
         </Pressable>
       </View>
+      <ConfirmModal
+        open={postConfirm}
+        title="Post this?"
+        message={picked.length > 0 ? `Post to the feed${picked.length ? `, tagged with ${picked.map((n) => `@${n}`).join(', ')}` : ''}.` : 'Your post goes to your circle.'}
+        confirmLabel="post it"
+        onCancel={() => setPostConfirm(false)}
+        onConfirm={() => {
+          if (!draft.trim() && attached.length === 0) {
+            setPostConfirm(false);
+            return;
+          }
+          onPost?.(draft.trim(), picked, attached);
+          clean();
+          setPostConfirm(false);
+        }}
+      />
       <Modal visible={tagPickerOpen} onClose={() => setTagPickerOpen(false)} title="tag friends">
         <InviteFriendsPicker title="tag friends" staging picked={picked} onPickedChange={setPicked} />
         <Pressable

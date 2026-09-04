@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppInput } from './AppInput';
 import { AppText } from './AppText';
@@ -17,13 +17,11 @@ export type Person = UserRef;
 
 export function usePeoplePool(): Person[] {
   const { friends } = useSampleData();
-  return useMemo(
-    () =>
-      (friends as Person[]).concat(
-        Array.from({ length: 12 }, (_, i) => ({ id: `x-${i}`, username: `friend${i + 1}`, name: `Friend ${i + 1}` })),
-      ),
-    [friends],
-  );
+  return concatPools(friends as Person[]);
+}
+
+function concatPools(base: Person[]): Person[] {
+  return base.concat(Array.from({ length: 12 }, (_, i) => ({ id: `x-${i}`, username: `friend${i + 1}`, name: `Friend ${i + 1}` })));
 }
 
 export function PeopleList({
@@ -31,7 +29,7 @@ export function PeopleList({
   searchable = true,
   heading,
 }: {
-  people: Person[];
+  people: { id: string; username: string; name: string }[];
   searchable?: boolean;
   heading?: string;
 }) {
@@ -39,6 +37,7 @@ export function PeopleList({
   const shown = people.filter(
     (p) => p.name.toLowerCase().includes(q.toLowerCase()) || p.username.toLowerCase().includes(q.toLowerCase()),
   );
+  // bounded height + own scrollbar: lists never grow a page
   return (
     <View style={styles.list}>
       {searchable && (
@@ -50,12 +49,12 @@ export function PeopleList({
           accessibilityLabel="search people"
         />
       )}
-      <View style={{ gap: 2 }}>
+      <ScrollView style={styles.bounded} contentContainerStyle={{ gap: 2 }} showsVerticalScrollIndicator>
         {shown.map((p) => (
           <PersonRow key={p.id} person={p} />
         ))}
         {shown.length === 0 && <AppText size="sm" tone="dim">nobody matches that</AppText>}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -156,6 +155,7 @@ export function InviteFriendsPicker({
 
 const styles = StyleSheet.create({
   list: { gap: 8 },
+  bounded: { maxHeight: 340 },
   personRow: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 4, borderRadius: 6 },
   personMeta: { gap: 0 },
   resultRow: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 6, borderRadius: 8 },

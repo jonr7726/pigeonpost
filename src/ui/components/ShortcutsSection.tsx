@@ -132,20 +132,25 @@ function AddModal({
           </Pressable>
         ))}
       </View>
-      <Pressable
-        onPress={() => {
-          if (!name.trim() || !href.trim()) return;
-          onAdd(name.trim(), href.trim(), icon);
-          setName('');
-          setHref('');
-          onClose();
-        }}
-        accessibilityRole="button"
-        testID="shortcut-add-submit"
-        style={[styles.addBtn, { backgroundColor: palette.accent }]}
-      >
-        <AppText style={{ color: palette.bg }}>add</AppText>
-      </Pressable>
+      <View style={styles.footRow}>
+        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="cancel" style={[styles.addBtn, styles.ghostBtn, { borderColor: palette.panelEdge }]}>
+          <AppText size="sm" tone="dim">cancel</AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            if (!name.trim() || !href.trim()) return;
+            onAdd(name.trim(), href.trim(), icon);
+            setName('');
+            setHref('');
+            onClose();
+          }}
+          accessibilityRole="button"
+          testID="shortcut-add-submit"
+          style={[styles.addBtn, { backgroundColor: palette.accent }]}
+        >
+          <AppText size="sm" style={{ color: palette.bg }}>add</AppText>
+        </Pressable>
+      </View>
     </Modal>
   );
 }
@@ -159,5 +164,7 @@ const styles = StyleSheet.create({
   x: { paddingHorizontal: 8, paddingVertical: 6, borderRadius: 6 },
   iconRow: { flexDirection: 'row', gap: 6 },
   iconBtn: { padding: 8, borderRadius: 8 },
-  addBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8, alignSelf: 'flex-start' as never },
+  footRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  ghostBtn: { borderWidth: 1, paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8 },
+  addBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8 },
 });

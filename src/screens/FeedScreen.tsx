@@ -1,63 +1,78 @@
 import { StyleSheet, View } from 'react-native';
 
-import { AppText, Composer, PeopleList, Screen, StoryRow, usePeoplePool } from '../ui/components';
+import { Card, Composer, PeopleList, PostCard, ScrollColumn, StoryRow, TwoColumns, usePeoplePool } from '../ui/components';
 import { useLayoutMode } from '../ui/theme/breakpoints';
-import { PostCard } from '../ui/components';
 import { useRouter } from '../ui/nav';
 import { useFeed } from '../data/sample/useSampleData';
+import type { Post } from '../data/sample/types-shared';
 
-// The main feed now matches the group layout: posts column + a right bar.
-// The right bar is your friends (the one people list) and stories; groups get
-// the same two columns minus stories. Mobile: single column with stories on
-// top. The 2/3 measure stays via Screen's desktop column.
+// The main feed is the same two-column pane as a group page: posts column
+// (create-post composer + posts) and a right bar (stories card, friends
+// card). Each column owns its scroll — no whole-page scroll. The 2/3 measure
+// stays via Screen's desktop column; mobile is one scrolling column with
+// stories on top of the posts.
 export function FeedScreen() {
   const router = useRouter();
   const desktop = useLayoutMode() === 'desktop';
-  const { posts, like, add } = useFeed();
+  const { posts, stories, like, add, edit, remove } = useFeed();
   const friends = usePeoplePool();
-  const { stories } = useFeed();
-  return (
-    <Screen>
-      <View style={styles.columns}>
-        <View style={styles.main}>
-          <Composer onPost={(text) => add(text)} />
-          {desktop ? (
-            posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                onLike={() => like(post.id)}
-                onPress={() => router.push({ screen: 'postDetail', postId: post.id })}
-              />
-            ))
-          ) : (
-            <>
-              <StoryRow stories={stories} />
-              {posts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onLike={() => like(post.id)}
-                  onPress={() => router.push({ screen: 'postDetail', postId: post.id })}
-                />
-              ))}
-            </>
-          )}
-        </View>
-        {desktop && (
-          <View style={styles.side}>
-            <StoryRow stories={stories} />
-            <AppText size="sm" tone="dim">your friends</AppText>
-            <PeopleList people={friends} />
-          </View>
-        )}
-      </View>
-    </Screen>
+
+  const isMine = (post: Post) => post.author.username === 'wren';
+
+  const main = (
+    <View style={{ gap: 12 }}>
+      <Card title="create post">
+        <Composer onPost={(text) => add(text)} />
+      </Card>
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          onLike={() => like(post.id)}
+          onPress={() => router.push({ screen: 'postDetail', postId: post.id })}
+          onEdit={isMine(post) ? (next: string) => edit(post.id, next) : undefined}
+          onDelete={isMine(post) ? () => remove(post.id) : undefined}
+        />
+      ))}
+    </View>
   );
+
+  const side = (
+    <View style={{ gap: 12 }}>
+      <Card title="stories">
+        <StoryRow stories={stories} />
+      </Card>
+      <Card title="friends">
+        <PeopleList people={friends} />
+      </Card>
+    </View>
+  );
+
+  const mobileMain = (
+    <View style={{ gap: 12 }}>
+      <Card title="create post">
+        <Composer onPost={(text) => add(text)} />
+      </Card>
+      <StoryRow stories={stories} />
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          onLike={() => like(post.id)}
+          onPress={() => router.push({ screen: 'postDetail', postId: post.id })}
+          onEdit={isMine(post) ? (next: string) => edit(post.id, next) : undefined}
+          onDelete={isMine(post) ? () => remove(post.id) : undefined}
+        />
+      ))}
+    </View>
+  );
+
+  if (!desktop) {
+    return <ScrollColumn>{mobileMain}</ScrollColumn>;
+  }
+  return <TwoColumns main={main} side={side} />;
 }
 
 const styles = StyleSheet.create({
-  columns: { flex: 1, flexDirection: 'row', gap: 16, alignItems: 'flex-start' },
-  main: { flex: 2, gap: 12 },
-  side: { flex: 1, gap: 12 },
+  pane: { flex: 1 },
 });

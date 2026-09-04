@@ -32,7 +32,13 @@ export function ConfirmModal({
     <Modal visible={open} onClose={onCancel} title={title}>
       <AppText>{message}</AppText>
       <View style={styles.row}>
-        <Pressable onPress={onCancel} accessibilityRole="button" accessibilityLabel={cancelLabel} style={styles.btn} testID="confirm-cancel">
+        <Pressable
+          onPress={onCancel}
+          accessibilityRole="button"
+          accessibilityLabel={cancelLabel}
+          style={[styles.btn, styles.bordered, { borderColor: palette.panelEdge }]}
+          testID="confirm-cancel"
+        >
           <AppText size="sm" tone="dim">{cancelLabel}</AppText>
         </Pressable>
         <Pressable
@@ -52,5 +58,6 @@ export function ConfirmModal({
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between' },
   btn: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8 },
+  bordered: { borderWidth: 1 },
   primary: { minWidth: 88, alignItems: 'center' },
 });

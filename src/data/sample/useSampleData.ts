@@ -33,7 +33,16 @@ export function useFeed() {
       ]),
     [],
   );
-  return { posts, stories, like, add };
+  const edit = useMemo(
+    () => (postId: string, text: string) =>
+      setPosts((current) => current.map((p) => (p.id === postId ? { ...p, text } : p))),
+    [],
+  );
+  const remove = useMemo(
+    () => (postId: string) => setPosts((current) => current.filter((p) => p.id !== postId)),
+    [],
+  );
+  return { posts, stories, like, add, edit, remove };
 }
 
 export function useProfile(username: string) {
