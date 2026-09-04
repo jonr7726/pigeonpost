@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText, Avatar, Divider, List, Panel, Rule, Screen, ScreenScroll, TopBar } from '../ui/components';
+import { AppText, Avatar, Divider, List, Panel, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { useTheme } from '../ui/theme/ThemeProvider';
 import { SearchBar } from '../ui/components/SearchBar';
 import { useRouter } from '../ui/nav';
@@ -32,7 +32,7 @@ export function FriendsScreen() {
         {friendRequests.length > 0 && (
           <View style={styles.section}>
             <AppText tone="display" size="md">Requests</AppText>
-            <Rule label="❦" />
+            
             {friendRequests.map((request) => (
               <RequestCard key={request.id} request={request} />
             ))}
@@ -40,7 +40,7 @@ export function FriendsScreen() {
         )}
         <View style={styles.section}>
           <AppText tone="display" size="md">Your circle</AppText>
-          <Rule label="❦" reverse />
+          
           <List
             items={friends}
             keyOf={(friend) => friend.username}

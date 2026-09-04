@@ -113,11 +113,19 @@ exhaustive design notes, wireframes and open questions that led here were
   grain + edge stains + shadow, the `PARCHMENT` spec in `palette.ts`) with ink
   text, so an opened letter reads as a physical piece of paper in both modes.
 - **Letters chrome:** compose is a quill (inline-SVG data-URI on a leather
-  disc, the `QuillButton`) in the Letters top bar; the compose and reading
-  panes have their own back chevron and sit on the dark study background (the
-  surrounding page never goes paper-white — the paper is just the sheet).
-  Immutability/method banners were removed from the letters pages (the
-  letters section above is where the model lives, not on-page disclaimers).
+  disc in the Letters top bar; on desktop, compose opens in the reading pane,
+  not a separate page — same pane, one right-hand surface). The compose and
+  reading panes have their own back chevron and sit on the dark study
+  background (the surrounding page never goes paper-white — the paper is just
+  the sheet). Immutability/method banners were removed from the letters pages
+  (the letters section above is where the model lives, not on-page
+  disclaimers).
+- **The chart is a place:** the letters map grows a fullscreen escape
+  (bottom-right) and a full-page chart screen; a settings cog over the map
+  (both surfaces) offers "change your location" → tap the chart to move your
+  pin. The mobile tab bar carries its own surface token (`navBand`) — a
+  chromium colour deliberately distinct from panels and pages; the settings
+  glyph stays a standard gear (the only gear in the UI).
 
 ### 4.2 Responsive — one component library, two layouts
 Desktop and mobile web reuse everything; the foolproof split is by **viewport

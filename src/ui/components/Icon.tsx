@@ -25,7 +25,8 @@ export type IconName =
   | 'write'
   | 'trash'
   | 'check'
-  | 'pin';
+  | 'pin'
+  | 'expand';
 
 const glyphs: Record<IconName, string> = {
   search: '⌕',
@@ -37,7 +38,7 @@ const glyphs: Record<IconName, string> = {
   home: '⌂',
   compass: '✧',
   profile: '☉',
-  settings: '❦',
+  settings: '⚙',
   bell: '🔔',
   sun: '☀',
   moon: '☾',
@@ -48,6 +49,7 @@ const glyphs: Record<IconName, string> = {
   trash: '✕',
   check: '✓',
   pin: '⌖',
+  expand: '⛶',
 };
 
 // `plain` is reserved for forcing text visuals once real assets land.

@@ -24,7 +24,7 @@ export function LetterReadScreen({ letterId }: { letterId: string }) {
         title={letter.subject}
         onBack={router.pop}
       />
-      <ScreenScroll>
+      <ScreenScroll contentStyle={styles.reader}>
       <LetterPaper letter={letter} firstOpen={letter.state === 'opened' && letter.text == null} />
       </ScreenScroll>
     </Screen>
@@ -49,6 +49,9 @@ export function LetterPaper({ letter, firstOpen }: { letter: Letter; firstOpen: 
 }
 
 const styles = StyleSheet.create({
+  // breathing room around the physical sheet: air above/below and at the
+  // column edges so the paper never touches the page chrome
+  reader: { paddingTop: 4, paddingBottom: 24 },
   paper: { padding: 28, gap: 12, minHeight: 320 },
   hand: { fontFamily: 'Georgia, serif', fontSize: 17, lineHeight: 28 },
 });

@@ -25,6 +25,9 @@ export const dark: Palette = {
   overlay: 'rgba(24,16,9,0.55)',
   hairline: '#c8a95f2b',
   band: 'linear-gradient(180deg, #40301f, #342516)',
+  // the mobile tab bar is its own object — deep oxblood leather, warmer and
+  // clearly distinct from panels/pages so the chrome reads as chrome
+  navBand: '#2c1a12',
   paper: '#ecdcb4',
   ink: '#2b2014',
   wax: '#7d2b23',
@@ -48,6 +51,7 @@ export const light: Palette = {
   overlay: 'rgba(42,30,18,0.35)',
   hairline: 'rgba(122,92,40,0.16)',
   band: 'linear-gradient(180deg, #e2d5b4, #d8caa6)',
+  navBand: '#d3c3a0',
   paper: '#f4ead2',
   ink: '#2a1e12',
   wax: '#7d2b23',

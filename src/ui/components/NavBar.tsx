@@ -30,7 +30,7 @@ export function NavBar({
 }) {
   const { palette } = useTheme();
   return (
-    <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
+    <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.navBand }]}>
       {navTabs.map(({ id, icon, label }) => {
         const isActive = active === id;
         return (

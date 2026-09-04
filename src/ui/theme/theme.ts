@@ -16,6 +16,7 @@ export type Palette = {
   overlay: string; // scrims / press states
   hairline: string; // the site-standard section rule (PM CogRule colour)
   band: string; // global nav band gradient (PM header port)
+  navBand: string; // mobile bottom nav — deliberately a different surface to every panel/page
   // Props — physical objects, not theme. Same names in both palettes; values
   // differ only where the medium demands it (paper is light in dark mode and a
   // natural lighter parchment in light mode — a letter is paper in both).
@@ -40,6 +41,7 @@ export const paletteTokens = [
   'overlay',
   'hairline',
   'band',
+  'navBand',
   'paper',
   'ink',
   'wax',

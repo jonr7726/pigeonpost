@@ -22,9 +22,7 @@ export function TopBar({
         <Pressable onPress={onBack} accessibilityRole="button" accessibilityLabel="back">
           <Icon name="back" size={24} />
         </Pressable>
-      ) : (
-        <View style={styles.edgeSpace} />
-      )}
+      ) : null}
       <AppText tone="display" size="lg" align="left" style={styles.title}>
         {title ?? ''}
       </AppText>
@@ -36,8 +34,10 @@ export function TopBar({
 }
 
 const styles = StyleSheet.create({
-  bar: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 16, gap: 8, borderBottomWidth: 1 },
-  edgeSpace: { width: 24 },
+  // the hairline breathes: a margin under the bar so the next component never
+  // sits hard against it, and the title shares the same edge padding as the
+  // vertical rhythm (no phantom second indent from an always-empty back slot).
+  bar: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 16, gap: 10, borderBottomWidth: 1, marginBottom: 14 },
   title: { flex: 1 },
   rightRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
 });

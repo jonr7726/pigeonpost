@@ -68,3 +68,10 @@ const sampleState = {
   friends: sample.friends,
   friendRequests: sample.friendRequests,
 };
+
+// Your loft on the chart, movable via the map cog ("change your location").
+const HOME_PIN = { x: 0.5, y: 0.62 };
+export function useMyPin() {
+  const [pin, setPin] = useState(HOME_PIN);
+  return { pin, setPin };
+}
