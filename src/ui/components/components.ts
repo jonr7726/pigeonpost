@@ -23,6 +23,7 @@ export { CommentRow } from './CommentRow';
 export { LikeButton } from './LikeButton';
 export { WorldMap, type MapPin, type MapFlight } from './WorldMap';
 export { timeAgo, daysUntil } from './timeAgo';
+export { QuillButton } from './QuillButton';
 export { SideRail } from './SideRail';
 export { UserMenu } from './UserMenu';
 export { PeopleList, InviteFriendsPicker, usePeoplePool, type Person } from './PeopleList';

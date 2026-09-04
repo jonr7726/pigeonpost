@@ -13,7 +13,7 @@ export function SettingsScreen() {
   return (
     <Screen width="standard">
       <TopBar title="Settings" />
-      <ScreenScroll>
+      <ScreenScroll contentStyle={styles.stack}>
       <Panel style={styles.gap}>
         <AppText tone="display" size="lg">
           Appearance
@@ -42,4 +42,5 @@ export function SettingsScreen() {
 
 const styles = StyleSheet.create({
   gap: { gap: 8, width: '100%' },
+  stack: { gap: 12, paddingBottom: 32 },
 });

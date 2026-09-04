@@ -8,6 +8,7 @@ export type ScreenParams =
   | { screen: 'postDetail'; postId: string }
   | { screen: 'letterRead'; letterId: string }
   | { screen: 'letterCompose' }
+  | { screen: 'map' }
   | { screen: 'username'; username: string }
   | { screen: 'event'; eventId: string }
   | { screen: 'eventCreate' }

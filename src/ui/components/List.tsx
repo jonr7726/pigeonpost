@@ -30,7 +30,7 @@ export function List<Item>({ items, renderItem, keyOf, loading, empty, error, di
         {(items ?? []).map((item, index) => (
           <View key={keyOf(item)} style={{ paddingBottom: 10 }}>
             {renderItem(item)}
-            {divided && index < (items?.length ?? 0) - 1 && <Divider />}
+            {divided && index < (items?.length ?? 0) - 1 && <Divider style={styles.sep} />}
           </View>
         ))}
       </View>
@@ -54,4 +54,8 @@ const styles = StyleSheet.create({
   error: { padding: 24 },
   screen: { paddingBottom: 32 },
   grow: { flex: 1, flexGrow: 1, flexBasis: 0 },
+  // a divided separator sits between two equal breaths of air: the item
+  // wrapper's paddingBottom is the gap below the hairline, so the card ↔
+  // hairline gap above can't double it up
+  sep: { marginTop: 10 },
 });

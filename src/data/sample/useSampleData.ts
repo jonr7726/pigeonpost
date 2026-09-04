@@ -162,3 +162,10 @@ export function useGroups() {
   );
   return { groups, rename, leave, invite, decide, post, like };
 }
+
+// Your loft on the chart, movable via the map cog ("change your location").
+const HOME_PIN = { x: 0.5, y: 0.62 };
+export function useMyPin() {
+  const [pin, setPin] = useState(HOME_PIN);
+  return { pin, setPin };
+}

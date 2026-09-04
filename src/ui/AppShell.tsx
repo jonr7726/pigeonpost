@@ -18,6 +18,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { PostDetailScreen } from '../screens/PostDetailScreen';
 import { LetterReadScreen } from '../screens/LetterReadScreen';
 import { LetterComposeScreen } from '../screens/LetterComposeScreen';
+import { MapScreen } from '../screens/MapScreen';
 import { useSession } from './session';
 import { clearDraft, ConfirmModal } from './components';
 import { draftGuard } from './components/draftGuard';
@@ -59,6 +60,7 @@ export function AppShell() {
     top?.screen === 'postDetail' ? <PostDetailScreen postId={top.postId} /> :
     top?.screen === 'letterRead' ? <LetterReadScreen letterId={top.letterId} /> :
     top?.screen === 'letterCompose' ? <LetterComposeScreen /> :
+    top?.screen === 'map' ? <MapScreen /> :
     top?.screen === 'username' ? <ProfileScreen username={top.username} /> :
     router.tab === 'feed' ? <FeedScreen /> : tabBody;
 

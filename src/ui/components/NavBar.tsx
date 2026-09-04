@@ -62,7 +62,7 @@ export function NavBar({
         <ShortcutsSection />
       </Modal>
       <View testID="navbar" style={styles.barWrap}>
-        <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
+        <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.navBand }]}>
           <Pressable
             onPress={() => onSelect('feed')}
             accessibilityRole="tab"

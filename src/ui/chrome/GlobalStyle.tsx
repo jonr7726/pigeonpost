@@ -16,9 +16,6 @@ const KEYFRAMES = `
     50% { transform: translateY(-4px); }
     100% { transform: translateY(0); }
   }
-  @keyframes rule-spin {
-    to { transform: rotate(360deg); }
-  }
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
   }
