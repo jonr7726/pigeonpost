@@ -23,3 +23,4 @@ export { CommentRow } from './CommentRow';
 export { LikeButton } from './LikeButton';
 export { WorldMap, type MapPin, type MapFlight } from './WorldMap';
 export { timeAgo, daysUntil } from './timeAgo';
+export { QuillButton } from './QuillButton';

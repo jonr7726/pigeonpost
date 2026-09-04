@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { AppInput, AppText, Panel, Screen, ScreenScroll, TopBar } from '../ui/components';
 import { StampHold } from '../ui/animations';
+import { PARCHMENT } from '../ui/theme/palette';
 import { useRouter } from '../ui/nav';
 import { useSampleData } from '../data/sample/useSampleData';
 import { useTheme } from '../ui/theme/ThemeProvider';
 
+// RN-web honours background-image/box-shadow on views, but RN core types don't
+// describe them for web: one lift, one place, next to the palette it comes from.
+const PARCHMENT_LAYER = { backgroundImage: PARCHMENT.backgroundImage, boxShadow: PARCHMENT.boxShadow } as unknown as ViewStyle;
 const CAP = 10_000; // L1: hard cap, never surfaced until you cross it
 
 // Compose: pick a friend → (map view holds their pin) → write → Stamp (hold)
@@ -22,15 +26,15 @@ export function LetterComposeScreen() {
   const overCap = body.length > CAP;
 
   return (
-    <Screen bg="paper" width="standard">
+    <Screen width="standard">
       <TopBar title="Compose" onBack={router.pop} />
       <ScreenScroll>
-        <Panel style={styles.paper}>
+        <Panel style={[styles.paper, PARCHMENT_LAYER]}>
           {sent ? (
             <Sentwing />
           ) : (
             <View style={styles.gap}>
-              <AppText tone="dim" size="sm">
+              <AppText size="sm" style={{ color: palette.ink, opacity: 0.8 }}>
                 one letter, one friend — pick with care 🕊️
               </AppText>
               <View style={styles.picker}>
@@ -40,16 +44,16 @@ export function LetterComposeScreen() {
                     onPress={() => setTo(f.username)}
                     accessibilityRole="button"
                     accessibilityLabel={`write to ${f.name}`}
-                    style={[styles.pick, { backgroundColor: palette.panel }, to === f.username && { borderColor: palette.accent, borderWidth: 1 }]}
+                    style={[styles.pick, { borderColor: palette.panelEdge, borderWidth: 1 }, to === f.username && { borderColor: palette.accent }]}
                   >
-                    <AppText size="sm" tone={to === f.username ? 'accent' : 'dim'}>
+                    <AppText size="sm" style={{ color: palette.ink, opacity: to === f.username ? 1 : 0.75 }}>
                       {f.name}
                     </AppText>
                   </Pressable>
                 ))}
               </View>
               {friend == null && (
-                <AppText tone="dim" align="center">
+                <AppText align="center" style={{ color: palette.ink, opacity: 0.8 }}>
                   a pigeon can only fly between friends — choose one above
                 </AppText>
               )}
@@ -65,7 +69,7 @@ export function LetterComposeScreen() {
                     onChangeText={setBody}
                     placeholder="dear …"
                     accessibilityLabel="letter body"
-                    style={styles.body}
+                    style={[styles.body, { backgroundColor: 'transparent', borderColor: PARCHMENT.blankLine, color: palette.ink }]}
                   />
                     {overCap && (
                     <AppText size="sm" align="center" style={{ color: palette.error }}>
@@ -108,6 +112,6 @@ const styles = StyleSheet.create({
   gap: { gap: 12 },
   body: { minHeight: 180 },
   picker: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' },
-  pick: { borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12 },
+  pick: { borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12 }, // chip on parchment: outline only, ink text
   sent: { gap: 8, padding: 24, alignItems: 'center', flex: 1 },
 });

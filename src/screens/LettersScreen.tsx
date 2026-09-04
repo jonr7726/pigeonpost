@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { AppButton, AppText, Banner, EmptyState, Icon, List, Panel, Screen, ScreenScroll, TopBar, daysUntil, timeAgo } from '../ui/components';
+import { AppText, EmptyState, Icon, List, Panel, QuillButton, Screen, ScreenScroll, TopBar, daysUntil, timeAgo } from '../ui/components';
 import { WorldMap } from '../ui/components/WorldMap';
 import { useLayoutMode } from '../ui/theme/breakpoints';
 import { useTheme } from '../ui/theme/ThemeProvider';
@@ -63,14 +63,12 @@ export function LettersScreen() {
     <Screen width={desktop ? 'full' : 'standard'}>
       <TopBar
         title="Letters"
-       
-        right={<AppButton label="Compose" variant="secondary" onPress={() => router.push({ screen: 'letterCompose' })} />}
+        right={<QuillButton onPress={() => router.push({ screen: 'letterCompose' })} />}
       />
       {desktop ? (
         <View style={styles.paneRow}>
           <View style={styles.paneLeft}>
             <ScreenScroll style={styles.grow} contentStyle={styles.paneScroll}>
-              <Banner>letters are one-offs — no threads, no unsend</Banner>
               {chart}
               {list(letters)}
             </ScreenScroll>
@@ -87,7 +85,6 @@ export function LettersScreen() {
         </View>
       ) : (
         <ScreenScroll>
-          <Banner>letters are one-offs — no threads, no unsend</Banner>
           {chart}
           {list(letters)}
         </ScreenScroll>

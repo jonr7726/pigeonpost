@@ -37,7 +37,7 @@ const glyphs: Record<IconName, string> = {
   home: '⌂',
   compass: '✧',
   profile: '☉',
-  settings: '⚙',
+  settings: '❦',
   bell: '🔔',
   sun: '☀',
   moon: '☾',

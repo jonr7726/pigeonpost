@@ -32,7 +32,7 @@ export function FriendsScreen() {
         {friendRequests.length > 0 && (
           <View style={styles.section}>
             <AppText tone="display" size="md">Requests</AppText>
-            <Rule label="⚙" />
+            <Rule label="❦" />
             {friendRequests.map((request) => (
               <RequestCard key={request.id} request={request} />
             ))}
@@ -40,7 +40,7 @@ export function FriendsScreen() {
         )}
         <View style={styles.section}>
           <AppText tone="display" size="md">Your circle</AppText>
-          <Rule label="⚙" reverse />
+          <Rule label="❦" reverse />
           <List
             items={friends}
             keyOf={(friend) => friend.username}

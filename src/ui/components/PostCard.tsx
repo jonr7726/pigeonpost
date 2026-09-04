@@ -12,10 +12,12 @@ import type { Post } from '../../data/sample/types-shared';
 // One post component, three content shapes (photo / text / blog). A blog post
 // shows its body; a photo shows its (storyboard) plate; a text shows its words.
 export function PostCard({ post, onPress, onLike }: { post: Post; onPress?: () => void; onLike?: () => void }) {
-  const { palette } = useTheme();
-  return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ disabled: !onPress }}>
-      <Panel>
+  // The card opens the post, but the HTML surface is per-region (header/body
+  // clickable) rather than one big <button>: nested pressables (like, comment)
+  // inside a role="button" ancestor are invalid DOM and break hydration on web.
+return (
+    <Panel>
+      <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ disabled: !onPress }} style={styles.open}>
         <View style={styles.header}>
           <Avatar name={post.author.name} size={36} />
           <View style={styles.meta}>
@@ -27,16 +29,16 @@ export function PostCard({ post, onPress, onLike }: { post: Post; onPress?: () =
         <AppText style={styles.body} tone={post.kind === 'text' ? 'body' : 'dim'}>
           {post.kind === 'blog' ? post.excerpt : post.text}
         </AppText>
-        <View style={styles.actions}>
-          <LikeButton count={post.likes} liked={post.liked} onPress={onLike} />
-          <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="comments" style={styles.row}>
-            <Icon name="comment" size={16} />
-            <AppText tone="dim">{post.commentCount}</AppText>
-          </Pressable>
-          {post.kind === 'blog' && <AppText tone="accent" size="sm">read post →</AppText>}
-        </View>
-      </Panel>
-    </Pressable>
+      </Pressable>
+      <View style={styles.actions}>
+        <LikeButton count={post.likes} liked={post.liked} onPress={onLike} />
+        <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="comments" style={styles.row}>
+          <Icon name="comment" size={16} />
+          <AppText tone="dim">{post.commentCount}</AppText>
+        </Pressable>
+        {post.kind === 'blog' && <AppText tone="accent" size="sm">read post →</AppText>}
+      </View>
+    </Panel>
   );
 }
 
@@ -54,6 +56,7 @@ function PhotoPlate({ seed }: { seed: string }) {
 }
 
 const styles = StyleSheet.create({
+  open: { flex: 1 },
   header: { flexDirection: 'row', gap: 10, alignItems: 'center', marginBottom: 10 },
   meta: { flex: 1 },
   actions: { flexDirection: 'row', gap: 18, alignItems: 'center', marginTop: 12 },

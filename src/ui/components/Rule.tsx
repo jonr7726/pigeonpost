@@ -5,9 +5,9 @@ import { AppText } from './AppText';
 import { useTheme } from '../theme/useTheme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 
-// The site-standard section rule (PM CogRule port): a brass hairline with a
-// small seal at its centre turning as if the rule were its drive shaft.
-// Alternate `reverse` between consecutive rules so they counter-rotate.
+// The site-standard section rule: a hairline with a small fleuron at its
+// centre (steampunk cogs retired). Alternate `reverse` between consecutive
+// rules so they mirror each other.
 export function Rule({ label, reverse, style }: { label?: string; reverse?: boolean; style?: object }) {
   const { palette } = useTheme();
   const reduced = useReducedMotion();

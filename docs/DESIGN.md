@@ -96,18 +96,28 @@ exhaustive design notes, wireframes and open questions that led here were
   where a colour literal may appear is `src/ui/theme/palette.ts` — enforced by
   `scripts/check_palette.sh` (see [TESTING](reference/TESTING.md)). Swapping a
   palette is swapping one file's values.
-- **Two palettes:** **dark** (default, the product identity — coal/walnut/brass,
-  ported from privacymogul's palette) and **light** ("parchment" — cream paper,
-  walnut ink, darkened brass, re-derived for WCAG contrast). Both implement the
-  same 11 tokens + 3 props; the light accent is *not* the raw brass because raw
-  brass fails contrast on cream.
+- **Two palettes:** **dark** (default — "the study at night": lighter mahogany
+  background ~#33241x, leather panels, aged-gold accents, a firelight glow in
+  the corners; no more privacymogul's near-black steampunk chrome —
+  retro-vintage only, no cogs/gears) and **light** ("manor daylight"). Both
+  implement the same 11 tokens + 3 props; the light accent is *not* the raw
+  gold because raw gold fails contrast on cream.
 - **Mode behaviour:** default dark; first run follows `prefers-color-scheme`;
   the toggle (sun/moon, in Settings) persists the user's choice. Only **global
   chrome** — NavBar, TopBar, banners — follows the viewer's theme. Profile
   **pages** are themed by their owner (below): a light profile page inside your
   dark chrome is intentional, not a bug.
 - **Letters are physical:** `paper` stays light and `ink` stays dark in both
-  modes; the mail stream should never look themeable.
+  modes; the mail stream should never look themeable. Pixel-level, the reading
+  pane is not a themed panel at all — it's a layered parchment sheet (SVG
+  grain + edge stains + shadow, the `PARCHMENT` spec in `palette.ts`) with ink
+  text, so an opened letter reads as a physical piece of paper in both modes.
+- **Letters chrome:** compose is a quill (inline-SVG data-URI on a leather
+  disc, the `QuillButton`) in the Letters top bar; the compose and reading
+  panes have their own back chevron and sit on the dark study background (the
+  surrounding page never goes paper-white — the paper is just the sheet).
+  Immutability/method banners were removed from the letters pages (the
+  letters section above is where the model lives, not on-page disclaimers).
 
 ### 4.2 Responsive — one component library, two layouts
 Desktop and mobile web reuse everything; the foolproof split is by **viewport

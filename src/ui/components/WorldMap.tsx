@@ -32,7 +32,7 @@ export function WorldMap({
       {pins.map((pin) => (
         <View key={`${pin.x}:${pin.y}`} style={[styles.pin, { left: `${pin.x * 100}%`, top: `${pin.y * 100}%` }]}>
           <View style={[styles.dot, { backgroundColor: pin.tone === 'you' ? palette.accent : wax }]} />
-          <AppText size="sm">{pin.label}</AppText>
+          <AppText size="sm" style={[styles.label, { color: ink }]}>{pin.label}</AppText>
         </View>
       ))}
     </View>
@@ -74,4 +74,5 @@ const styles = StyleSheet.create({
   dot: { width: 10, height: 10, borderRadius: 5, borderWidth: 1, borderColor: 'transparent' },
   flight: { position: 'absolute', height: 0, borderStyle: 'dashed', borderTopWidth: 2, overflow: 'visible' },
   marker: { position: 'absolute', top: -22, alignSelf: 'center' },
+  label: { fontSize: 13 },
 });

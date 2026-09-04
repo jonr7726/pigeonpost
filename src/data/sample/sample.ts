@@ -84,9 +84,9 @@ export const letters: Letter[] = [
     createdAt: hours(40), arrivesAt: days(-0.2),
   },
   {
-    id: 'l-3', from: users.nia, to: me, state: 'opened', subject: 'on slow mail',
+    id: 'l-3', from: users.nia, to: me, state: 'opened', subject: 'a deed of safekeeping',
     createdAt: days(-4),
-    text: 'Wren — I have decided the point of pigeon post is that it arrives *once*. No ping, no thread: the letter shows up and then the afternoon belongs to it.',
+    text: 'I, ____________, entrust to ____________ the keys to my password vault.\n\nMaster password: ____________\nRecovery code: ____________\n\nThe holder shall keep both in their own vault and nowhere else, show them to no one, and return them only on the day I ask.\n\nShould either key ever touch another channel by accident, the holder shall tell me at once, so I can reset the password and issue this deed anew.\n\nSigned: ____________\nDate: ____________',
   },
   {
     id: 'l-4', from: users.otto, to: me, state: 'overdue', subject: 'brass compass — where?',
