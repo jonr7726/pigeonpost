@@ -2,7 +2,7 @@
 
 The living description of the system today. Update this in the same commit as any
 structural change. The *why* behind each choice is in [`DECISIONS.md`](DECISIONS.md);
-the exact crypto is in [`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md).
+the exact crypto is in [`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md).
 
 ## The one-paragraph model
 

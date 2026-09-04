@@ -163,3 +163,37 @@ own scrollbar (BrassRail reports only the tallest pane). Own posts get edit
 (inline text box, no nav hijack) and delete buttons; a half-typed post/event
 raises a discard confirmation on navigation. Storyboard only — real wiring is
 `R-014`.
+**C23 — One subset only: "close friends."** Post/story audiences are
+`circle | close | public`, where `close` is a *single* optional subset — never
+per-friend selects, never arbitrary named subsets. Each allowed audience is its
+own key + epoch chain (same §-3 machinery of CRYPTO-SPEC), so a whole family of
+subset-proliferation problems never exists. Supersedes nothing; narrows C04/C05
+to the single-subset shape.
+
+**C24 — Sealed content, plaintext metadata; no searchable encryption, ever.**
+The tension-Jon-faq: a server must filter/sort/route (recent posts from my
+friends, unread counts, delivery times, who's in a group), so content lives in
+one sealed `payload` column and *declared* metadata fields stay plaintext —
+Signal/WhatsApp/Apple-ADP all converge on the same split, and Apple's own
+explanation is that sorting is impossible otherwise. Rule of record: any field a
+required query must filter/sort/count on is plaintext and **published in the
+trust model's metadata list** (each new filterable field = an explicit decision
+to expose metadata); content search stays client-side over fetched pages.
+Searchable / order-preserving / "queryable" encryption (beacons, OPE/ORE, SSE) is
+ruled out: documented access-pattern reconstruction attacks are practical, no
+vendor supports sorting on encrypted columns, and it would violate the
+reuse-vetted-libs rule (C10). Schema stays crypto-agnostic (typed tables with a
+single nullable `payload` column). Refines C08 (typed blobs → typed tables with a
+`payload` column; blob core still one mechanism).
+
+**C25 — Groups: server-enforced membership, member-held keys.** A group is a
+single-channel shared feed: one symmetric group key, epoch chain exactly like a
+circle (§3.2 — kick = mint `K_{n+1}` sealed to remaining members, **no
+re-encryption of old payloads**; removed members keep old epochs — "cut the
+future, not the past," same honesty line as unfriending). Membership, invites
+(any member may invite), kick, and post rights are **server-enforced** (E2EE
+protects content from the server; access control is the server's job), with
+epoch-key distribution gated by that roster. Stated limits: past group content
+stays visible to a removed member; a current member can always share the current
+key out-of-band — equivalent to screenshotting, logged as a trust limit, not
+designed around.

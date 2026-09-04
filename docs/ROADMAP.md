@@ -5,7 +5,7 @@ the history lives in `DECISIONS.md`, frozen plans, and git). IDs are immutable
 `R-NNN`, never reused; next = highest + 1.
 
 The build is two streams after the foundation, per [`DESIGN.md`](DESIGN.md) and
-[`plans/CRYPTO-SPEC.md`](plans/CRYPTO-SPEC.md).
+[`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md).
 
 ## Now — foundation
 - **R-001 — Accounts & friends.** Anonymous username + password (PAKE), Ed25519 +
