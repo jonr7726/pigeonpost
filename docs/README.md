@@ -27,7 +27,7 @@ Docs fall into three lifecycles: **Living** (kept current forever), **Reference*
 |-----|---------|
 | [`reference/DEV-ENVIRONMENT.md`](reference/DEV-ENVIRONMENT.md) | Running/building the client locally, the client-side gate. |
 | [`reference/TESTING.md`](reference/TESTING.md) | Test tiers; where each tier lives (crypto/unit here, e2e in the server repo). |
-| [`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md) | **The crypto blueprint** — key hierarchy, audiences/epoch chains, groups, the sealed-payload data model; the reference of record for all crypto decisions (C22–C24 land in DECISIONS). |
+| [`reference/CRYPTO-SPEC.md`](reference/CRYPTO-SPEC.md) | **The crypto blueprint** — key hierarchy, audiences/epoch chains, groups, the sealed-payload data model; the reference of record for all crypto decisions; C23–C25 land in DECISIONS). |
 
 ## Plans — one slice each, frozen when shipped
 Each carries a `Status:` line. Active plans are linked from `ROADMAP.md` by `R-NNN`.

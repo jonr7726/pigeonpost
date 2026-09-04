@@ -144,14 +144,33 @@ column width (`Screen width=`), chrome that swaps itself (NavBar ↔ SideRail),
 and per-widget spans — never a screen split in two by breakpoint. (Mogul
 Music's ported ratchet discipline, now also guarding colour.)
 
-**C22 — One subset only: "close friends."** Post/story audiences are
+**C22 — Old-Facebook desktop chrome; feed and groups are one component.** The
+desktop UI copies old Facebook deliberately: an icon TopNav with a search bar,
+word links (home/feed/letters/events), a people icon, bell/gear and a user
+dropdown (behind the avatar, Instagram-style, with switch-account and logout);
+a left rail (desktop only) holding Groups above Shortcuts. Groups are
+invite-only mini-feeds rendered with the **same** composer, post cards and
+two-column pane as the main feed — the only deltas are the right-hand settings
+column and an optional cover photo; the settings column is split into section
+cards (settings, members, invite) and every destructive/confirm action uses the
+one shared `ConfirmModal` (cancel bordered bottom-left, primary bottom-right,
+red when a warning). People lists are one searchable, bounded-scroll component
+across the feed's friends bar, group members and event members. Events are a
+bare create button + whole-page create/read screens. **Scroll is per-pane**: the
+feed/group columns each own a `ScrollView` and the document never scrolls; the
+app root is a fixed height so `flex:1` panes bound, and each column shows its
+own scrollbar (BrassRail reports only the tallest pane). Own posts get edit
+(inline text box, no nav hijack) and delete buttons; a half-typed post/event
+raises a discard confirmation on navigation. Storyboard only — real wiring is
+`R-014`.
+**C23 — One subset only: "close friends."** Post/story audiences are
 `circle | close | public`, where `close` is a *single* optional subset — never
 per-friend selects, never arbitrary named subsets. Each allowed audience is its
 own key + epoch chain (same §-3 machinery of CRYPTO-SPEC), so a whole family of
 subset-proliferation problems never exists. Supersedes nothing; narrows C04/C05
 to the single-subset shape.
 
-**C23 — Sealed content, plaintext metadata; no searchable encryption, ever.**
+**C24 — Sealed content, plaintext metadata; no searchable encryption, ever.**
 The tension-Jon-faq: a server must filter/sort/route (recent posts from my
 friends, unread counts, delivery times, who's in a group), so content lives in
 one sealed `payload` column and *declared* metadata fields stay plaintext —
@@ -167,7 +186,7 @@ reuse-vetted-libs rule (C10). Schema stays crypto-agnostic (typed tables with a
 single nullable `payload` column). Refines C08 (typed blobs → typed tables with a
 `payload` column; blob core still one mechanism).
 
-**C24 — Groups: server-enforced membership, member-held keys.** A group is a
+**C25 — Groups: server-enforced membership, member-held keys.** A group is a
 single-channel shared feed: one symmetric group key, epoch chain exactly like a
 circle (§3.2 — kick = mint `K_{n+1}` sealed to remaining members, **no
 re-encryption of old payloads**; removed members keep old epochs — "cut the

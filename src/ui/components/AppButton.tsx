@@ -16,7 +16,9 @@ export function AppButton({
   loading,
   size = 'md',
   full,
+  testID,
 }: {
+  testID?: string;
   label: string;
   onPress: () => void;
   variant?: AppButtonVariant;
@@ -36,6 +38,7 @@ export function AppButton({
     variant === 'primary' || variant === 'danger' ? 'invert' : 'accent';
   return (
     <Pressable
+      testID={testID}
       onPress={onPress}
       disabled={disabled || loading}
       accessibilityRole="button"

@@ -40,7 +40,7 @@ Per user, generated client-side:
 ### 3.1 Audiences
 A post carries one `audience` value: `circle` | `close` | `public` (letters are a
 separate stream, §6). Each of `circle` and `close` is its own key + epoch chain;
-`close` (C22) is a *single* optional subset — at most one `close` key stream per
+`close` (C23) is a *single* optional subset — at most one `close` key stream per
 user, never arbitrary per-friend subsets. Modeled as one mechanism we instantiate as
 a **store**: a key stream `(scope, ownerId|groupId)` producing an epoch chain.
 
@@ -100,9 +100,9 @@ and list; it cannot read sealed content.
 - Read state is its own **plaintext** per-recipient row
   (`letter_reads: letterId, recipientId, readAt`) — unread counts are a server-side
   indexed `COUNT(*)`. `who-read-when` is declared normal metadata (two-person
-  stream); see §7 and C23.
+  stream); see §7 and C24.
 
-## 7. Data model: sealed content, plaintext metadata (C23)
+## 7. Data model: sealed content, plaintext metadata (C24)
 
 ### 7.1 The rule
 **Content or content-evocative → sealed in one `payload` column. Anything a
@@ -150,7 +150,7 @@ private copy sealed to their own key before expiry (optional, client-side).
 No circle key. `audience: 'public'`, `payload` holds cleartext. Unlimited
 audience. Same shape, minimal special-casing (R-009).
 
-## 7d. Groups (invite-only shared feed)
+## 7d. Groups (invite-only shared feed) — server-enforced membership (C25)
 A group is a shared single-channel feed — the circle machinery pointed at a
 `groupId` instead of a personal stream:
 - **One shared symmetric group key, epoch chain exactly as §3.2.** Every member

@@ -1,22 +1,22 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from './AppText';
 import { Avatar } from './Avatar';
-import { Icon, type IconName } from './Icon';
+import { Composer } from './Composer';
+import { GroupSection } from './SideRail';
+import { ShortcutsSection } from './ShortcutsSection';
+import { Modal } from './Modal';
+import { UserMenu } from './UserMenu';
+import { useRouter } from '../nav';
 import { useTheme } from '../theme/useTheme';
 
-export type TabId = 'letters' | 'feed' | 'discover' | 'profile' | 'settings';
+export type TabId = 'letters' | 'feed' | 'discover' | 'profile' | 'settings' | 'events';
 
-// Four content tabs; profile is reached from the user image (your rule) and
-// the bell rides in the bar with its badge. Desktop swaps this for TopNav —
-// same TabId list in both renderers.
-export const navTabs: { id: TabId; icon: IconName; label: string }[] = [
-  { id: 'letters', icon: 'letters', label: 'Letters' },
-  { id: 'feed', icon: 'home', label: 'Feed' },
-  { id: 'discover', icon: 'compass', label: 'Friends' },
-  { id: 'settings', icon: 'settings', label: 'Settings' },
-];
-
+// Mobile bottom bar (features all reachable): feed (📣), letters (✉), more
+// (≡ — friends, groups, shortcuts), notifications, and the avatar opening the
+// account menu upward (switch account + log out). Creation lives where the
+// thing gets created: the feed composer and the events page.
 export function NavBar({
   active,
   onSelect,
@@ -29,50 +29,104 @@ export function NavBar({
   bellActive?: boolean;
 }) {
   const { palette } = useTheme();
+  const router = useRouter();
+  const [moreOpen, setMoreOpen] = useState(false);
+
   return (
-    <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
-      {navTabs.map(({ id, icon, label }) => {
-        const isActive = active === id;
-        return (
+    <>
+      <Modal visible={moreOpen} onClose={() => setMoreOpen(false)} title="more">
+        <Pressable
+          onPress={() => {
+            setMoreOpen(false);
+            router.goTab('discover');
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="friends"
+          style={styles.moreRow}
+          testID="more-friends"
+        >
+          <AppText size="md">👥 friends</AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setMoreOpen(false);
+            router.goTab('events');
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="events"
+          style={styles.moreRow}
+        >
+          <AppText size="md">📅 events</AppText>
+        </Pressable>
+        <GroupSection onOpen={(id: string) => { setMoreOpen(false); router.push({ screen: 'group', groupId: id }); }} />
+        <ShortcutsSection />
+      </Modal>
+      <View testID="navbar" style={styles.barWrap}>
+        <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
           <Pressable
-            key={id}
-            onPress={() => onSelect(id)}
+            onPress={() => onSelect('feed')}
             accessibilityRole="tab"
-            accessibilityState={{ selected: isActive }}
-            accessibilityLabel={label}
+            accessibilityState={{ selected: active === 'feed' }}
+            accessibilityLabel="feed"
             style={styles.tab}
           >
-            <Icon name={icon} size={20} />
-            <AppText size="sm" tone={isActive ? 'accent' : 'dim'} style={styles.label}>
-              {label}
-            </AppText>
-            {isActive && <View style={[styles.dot, { backgroundColor: palette.accent }]} />}
+            <AppText style={{ fontSize: 20, color: active === 'feed' ? palette.accent : palette.textDim }}>📣</AppText>
           </Pressable>
-        );
-      })}
-      <Pressable onPress={() => onSelect('feed')} accessibilityRole="button" accessibilityLabel="notifications" style={[styles.tab, styles.bell]}>
-        <Icon name="bell" size={20} />
-        {bellActive && <View style={[styles.dot, styles.bellDot, { backgroundColor: palette.error }]} />}
-      </Pressable>
-      <Pressable
-        onPress={() => onSelect('profile')}
-        accessibilityRole="button"
-        accessibilityLabel={`your profile, ${username}`}
-        accessibilityState={{ selected: active === 'profile' }}
-        style={styles.me}
-      >
-        <Avatar name={username} size={30} ring={active === 'profile'} accessibilityLabel={`profile of ${username}`} />
-      </Pressable>
-    </View>
+          <Pressable
+            onPress={() => onSelect('letters')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: active === 'letters' }}
+            accessibilityLabel="letters"
+            style={styles.tab}
+          >
+            <AppText style={{ fontSize: 20, color: active === 'letters' ? palette.accent : palette.textDim }}>✉</AppText>
+          </Pressable>
+          <Pressable
+            onPress={() => setMoreOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel="more — friends, groups, shortcuts"
+            style={styles.tab}
+            testID="more-open"
+          >
+            <AppText style={{ fontSize: 20, color: palette.textDim }}>≡</AppText>
+          </Pressable>
+          <Pressable
+            onPress={() => onSelect('feed')}
+            accessibilityRole="button"
+            accessibilityLabel="notifications"
+            style={[styles.tab, styles.smallTab]}
+          >
+            <AppText style={{ fontSize: 20 }}>🔔</AppText>
+            {bellActive && <View style={[styles.bellDot, { backgroundColor: palette.error }]} />}
+          </Pressable>
+          <UserMenu
+            username={username}
+            direction="up"
+            onGoProfile={() => onSelect('profile')}
+            trigger={(openMenu, openNow) => (
+              <Pressable
+                onPress={openMenu}
+                accessibilityRole="button"
+                accessibilityLabel={`account menu for ${username}`}
+                accessibilityState={{ expanded: openNow }}
+                style={styles.me}
+              >
+                <Avatar name={username} size={30} accessibilityLabel={`account menu of ${username}`} ring={active === 'profile'} />
+              </Pressable>
+            )}
+          />
+        </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  bar: { flexDirection: 'row', borderTopWidth: 1, paddingBottom: 12, alignItems: 'center' },
-  tab: { flex: 1, alignItems: 'center', gap: 2, paddingTop: 10 },
-  label: { fontSize: 11 },
-  dot: { width: 4, height: 4, borderRadius: 2, marginTop: 2 },
-  bell: { flex: 'auto' as never, gap: 0 },
-  bellDot: { position: 'absolute', top: 12, right: 2 },
+  barWrap: { position: 'relative' as never, zIndex: 100 as never },
+  bar: { flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, paddingBottom: 10 },
+  tab: { flex: 1, alignItems: 'center', paddingTop: 10 },
+  smallTab: { flex: 'auto' as never, paddingHorizontal: 14 },
+  bellDot: { position: 'absolute' as never, top: 10, right: 2 },
   me: { paddingRight: 14, paddingLeft: 4 },
+  moreRow: { paddingVertical: 10, paddingHorizontal: 14 },
 });
