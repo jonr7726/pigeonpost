@@ -102,4 +102,5 @@ const styles = StyleSheet.create({
   mobileScrollArea: { width: '100%', maxWidth: 1240, flex: 1 },
   desktopCols: { flex: 1, flexDirection: 'row' },
   railContent: { flex: 1, flexDirection: 'column', alignItems: 'center' },
+
 });

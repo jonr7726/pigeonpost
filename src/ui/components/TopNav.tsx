@@ -35,7 +35,7 @@ export function TopNav({
   ];
 
   return (
-    <View testID="topnav">
+    <View testID="topnav" style={styles.bandWrap}>
       <View style={[styles.band, { borderBottomColor: palette.panelEdge, backgroundColor: palette.band }]}>
         <Pressable onPress={() => onSelect('feed')} accessibilityRole="button" accessibilityLabel="pigeonpost home" style={styles.mark}>
           <AppText style={styles.markGlyph}>🕊️</AppText>
@@ -110,12 +110,13 @@ export function TopNav({
 }
 
 const styles = StyleSheet.create({
+  bandWrap: { position: 'relative' as never, zIndex: 100 as never },
   band: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: 1,
   },
   mark: { padding: 4 },
-  markGlyph: { fontSize: 22 },
+  markGlyph: { fontSize: 20, lineHeight: 24, paddingVertical: 2 },
   search: {
     flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, maxWidth: 420,
     borderRadius: 20, borderWidth: 1, paddingHorizontal: 12, height: 34,

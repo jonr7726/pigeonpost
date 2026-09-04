@@ -43,7 +43,7 @@ export function NavBar({
       </Modal>
       <CreateEventModal visible={eventOpen} onClose={() => setEventOpen(false)} />
       <View testID="navbar">
-        <View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
+        <View style={styles.barWrap}><View style={[styles.bar, { borderTopColor: palette.panelEdge, backgroundColor: palette.band }]}>
           {navTabs.map(({ id, label }) => {
             const isActive = active === id;
             return (
@@ -115,7 +115,7 @@ export function NavBar({
             </Pressable>
           </View>
         )}
-      </View>
+      </View></View>
     </>
   );
 }
@@ -131,6 +131,7 @@ function Glyph({ glyph, size = 20, tone }: { glyph: string; size?: number; tone?
 }
 
 const styles = StyleSheet.create({
+  barWrap: { position: 'relative' as never, zIndex: 100 as never, backgroundColor: 'transparent' },
   bar: { flexDirection: 'row', borderTopWidth: 1, paddingBottom: 10, alignItems: 'center' },
   tab: { flex: 1, alignItems: 'center', gap: 2, paddingTop: 10 },
   smallTab: { flex: 'auto' as never, gap: 0 },

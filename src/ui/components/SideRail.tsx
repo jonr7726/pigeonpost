@@ -51,7 +51,7 @@ export function SideRail({
           accessibilityState={{ selected: view === 'feed' }}
           style={[styles.toggleBtn, view === 'feed' && { backgroundColor: palette.panelEdge }]}
         >
-          <AppText size="sm" style={{ color: palette.text }}><Icon name="pigeon" size={14} />{'  '}Feed</AppText>
+          <AppText size="sm" style={{ color: palette.text }}>🕊 Feed</AppText>
         </Pressable>
         <Pressable
           onPress={() => onView('events')}
@@ -59,7 +59,7 @@ export function SideRail({
           accessibilityState={{ selected: view === 'events' }}
           style={[styles.toggleBtn, view === 'events' && { backgroundColor: palette.panelEdge }]}
         >
-          <AppText size="sm" style={{ color: palette.text }}>📅  Events</AppText>
+          <AppText size="sm" style={{ color: palette.text }}>📅 Events</AppText>
         </Pressable>
       </View>
 
@@ -90,7 +90,7 @@ export function SideRail({
           <AppText size="md" numberOfLines={1} style={styles.linkLabel}>{label}</AppText>
         </Pressable>
       ))}
-      <AppText size="sm" tone="dim" style={styles.hint}>click a shortcut to remove it (storyboard)</AppText>
+      <AppText size="sm" tone="dim">click a shortcut to remove it</AppText>
 
       <Divider />
       <AppText size="sm" tone="dim" style={styles.sectionLabel}>explore</AppText>
@@ -108,11 +108,10 @@ const styles = StyleSheet.create({
   rail: { width: 220, borderRightWidth: 1, paddingVertical: 10, paddingHorizontal: 8 },
   meRow: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 8, borderRadius: 8 },
   toggle: { flexDirection: 'row', gap: 6, marginBottom: 10 },
-  toggleBtn: { flex: 1, paddingVertical: 6, borderRadius: 8, alignItems: 'center' },
+  toggleBtn: { flex: 1, paddingVertical: 6, borderRadius: 8, alignItems: 'center', overflow: 'hidden' },
   sectionHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 8 },
   sectionLabel: { textTransform: 'uppercase', letterSpacing: 2, fontSize: 10, marginVertical: 8 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 6, borderRadius: 6 },
   linkLabel: { flex: 1 },
   shortcutInput: { borderWidth: 1, borderRadius: 6, padding: 6, margin: 4 },
-  hint: { paddingHorizontal: 8, marginTop: 6 },
 });

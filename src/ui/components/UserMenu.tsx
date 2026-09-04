@@ -66,7 +66,7 @@ export function UserMenu({
                 />
               ))}
           <MenuItem
-            icon="⌂"
+            icon="⇥"
             label="Log out"
             onPress={() => {
               setOpen(false);

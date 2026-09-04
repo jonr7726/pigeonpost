@@ -89,6 +89,16 @@ export function Composer({ onPost }: { onPost?: (text: string, tagged: number) =
           </Pressable>
         )}
       </View>
+      {!open && (
+        <View style={styles.actions}>
+          <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel="attach photo or video" style={styles.action}>
+            <AppText size="sm" style={{ color: palette.accent }}>📷 / 🎬 photo or video</AppText>
+          </Pressable>
+          <Pressable onPress={() => setOpen(true)} accessibilityRole="button" accessibilityLabel="tag friends" style={styles.action}>
+            <AppText size="sm" style={{ color: palette.accent }}>@tag friends</AppText>
+          </Pressable>
+        </View>
+      )}
     </Panel>
   );
 }
